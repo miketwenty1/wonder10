@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::PlayerName;
+use crate::{
+    keyboard::{setup_keyboard, KeyBoardButton},
+    PlayerName,
+};
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
-
-#[derive(Component, Debug)]
-pub struct KeyBoardButton(char);
 
 #[derive(Component)]
 pub struct Capitalizable;
@@ -52,20 +52,14 @@ pub fn spawn_layout(
             style: Style {
                 display: Display::Grid,
                 size: Size::all(Val::Percent(100.)),
-                /// Set the grid to have 2 columns with sizes [min-content, minmax(0, 1fr)]
-                ///   - The first column will size to the size of it's contents
-                ///   - The second column will take up the remaining available space
-                grid_template_columns: vec![GridTrack::flex(1.0)], // GridTrack::min_content()
-                /// Set the grid to have 3 rows with sizes [auto, minmax(0, 1fr), 20px]
-                ///  - The first row will size to the size of it's contents
-                ///  - The second row take up remaining available space (after rows 1 and 3 have both been sized)
-                ///  - The third row will be exactly 20px high
+                grid_template_columns: vec![GridTrack::flex(1.0)],
                 grid_template_rows: vec![
-                    GridTrack::auto(),
+                    GridTrack::flex(1.0),
                     GridTrack::flex(1.0),
                     GridTrack::flex(1.0),
                     GridTrack::flex(1.0),
                 ],
+                padding: UiRect::horizontal(Val::Percent(20.0)),
                 ..default()
             },
             background_color: BackgroundColor(Color::GRAY),
@@ -78,8 +72,6 @@ pub fn spawn_layout(
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        /// Make this node span two grid columns so that it takes up the entire top tow
-                        //grid_column: GridPlacement::span(1),
                         padding: UiRect::all(Val::Px(6.0)),
                         ..default()
                     },
@@ -93,8 +85,6 @@ pub fn spawn_layout(
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        /// Make this node span two grid columns so that it takes up the entire top tow
-                        //grid_column: GridPlacement::span(1),
                         padding: UiRect::all(Val::Px(6.0)),
                         ..default()
                     },
@@ -103,27 +93,24 @@ pub fn spawn_layout(
                 .with_children(|builder| {
                     spawn_nested_text_bundle(builder, font.clone(), &player_name.0.to_string());
                 });
-            builder.spawn(NodeBundle {
-                style: Style {
-                        display: Display::Grid,
-                        justify_items: JustifyItems::Center,
-                        /// Make this node span two grid columns so that it takes up the entire top tow
-                        //grid_column: GridPlacement::span(1),
-                        padding: UiRect::all(Val::Px(6.0)),
-                        ..default()
-                    },
-                ..default()
-            });
-            // .with_children(|builder| {
-            //     keyboard_bundle(builder, font.clone());
-            // });
             builder
                 .spawn(NodeBundle {
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        /// Make this node span two grid columns so that it takes up the entire top tow
-                        //grid_column: GridPlacement::span(1),
+                        padding: UiRect::all(Val::Px(6.0)),
+                        ..default()
+                    },
+                    ..default()
+                })
+                .with_children(|builder| {
+                    setup_keyboard(builder, font.clone());
+                });
+            builder
+                .spawn(NodeBundle {
+                    style: Style {
+                        display: Display::Grid,
+                        justify_items: JustifyItems::Center,
                         padding: UiRect::all(Val::Px(6.0)),
                         ..default()
                     },
@@ -159,19 +146,13 @@ fn spawn_nested_text_bundle(builder: &mut ChildBuilder, font: Handle<Font>, text
         text,
         TextStyle {
             font,
-            font_size: 24.0,
+            font_size: 48.0,
             color: Color::BLACK,
         },
     ));
 }
 
 fn start_button(builder: &mut ChildBuilder, font: Handle<Font>) {
-    // let key_chars = ["1234567890<", "qwertyuiop", "^asdfghjkl", "zxcvbnm "];
-
-    // let number_set = "1234567890";
-    // let function_set = "<^ ";
-    // let letter_set = "abcdefghijklmnopqrstuvwxyz";
-
     builder
         .spawn(NodeBundle {
             style: Style {
@@ -212,7 +193,7 @@ fn start_button(builder: &mut ChildBuilder, font: Handle<Font>) {
 pub fn button_system(
     mut interaction_query: Query<
         (&Interaction, &mut BackgroundColor, &Children),
-        (Changed<Interaction>, With<Button>),
+        (Changed<Interaction>, With<Button>, Without<KeyBoardButton>),
     >,
     mut text_query: Query<&mut Text>,
 ) {
@@ -234,40 +215,3 @@ pub fn button_system(
         }
     }
 }
-//commands.spawn(CapitalizeToggle(false));
-
-// builder
-//     .spawn(NodeBundle {
-//         style: Style {
-//             size: Size::width(Val::Percent(100.0)),
-//             align_items: AlignItems::Center,
-//             justify_content: JustifyContent::Center,
-//             ..default()
-//         },
-//         ..default()
-//     })
-//     .with_children(|parent| {
-//         parent
-//             .spawn(ButtonBundle {
-//                 style: Style {
-//                     size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-//                     // horizontally center child text
-//                     justify_content: JustifyContent::Center,
-//                     // vertically center child text
-//                     align_items: AlignItems::Center,
-//                     ..default()
-//                 },
-//                 background_color: NORMAL_BUTTON.into(),
-//                 ..default()
-//             })
-//             .with_children(|parent| {
-//                 parent.spawn(TextBundle::from_section(
-//                     "Button",
-//                     TextStyle {
-//                         font,
-//                         font_size: 40.0,
-//                         color: Color::rgb(0.9, 0.9, 0.9),
-//                     },
-//                 ));
-//             });
-// });

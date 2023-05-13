@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::player_name_menu::button_system;
+use crate::{keyboard::keyboard_system, player_name_menu::button_system};
 
+mod keyboard;
 mod player_name_menu;
 //mod flexy;
 
@@ -42,6 +43,7 @@ pub fn game(username: String, server_url: String) {
         .insert_resource(ServerURL(server_url))
         .add_systems(Startup, setup)
         .add_systems(Update, button_system)
+        .add_systems(Update, keyboard_system)
         .add_state::<GameState>()
         .add_systems(Startup, player_name_menu::spawn_layout)
         .run();

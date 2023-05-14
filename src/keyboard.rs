@@ -1,38 +1,28 @@
 use bevy::prelude::*;
-use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::PlayerName;
+const NORMAL_BUTTON: Color = Color::DARK_GRAY;
+// const HOVERED_BUTTON: Color = Color::DARK_GREEN;
+// const PRESSED_BUTTON: Color = Color::PURPLE;
 
-const NORMAL_BUTTON: Color = Color::BLACK;
-const HOVERED_BUTTON: Color = Color::DARK_GREEN;
-const PRESSED_BUTTON: Color = Color::WHITE;
+const NUMBER_SET: &str = "1234567890";
+const FUNCTION_SET: &str = "<^ ";
+const LETTER_SET: &str = "abcdefghijklmnopqrstuvwxyz";
 
 #[derive(Component, Debug)]
 //pub struct KeyBoardButton(char);
-pub struct KeyBoardButton(char);
+pub struct KeyBoardButton(pub char);
 
-#[derive(Component)]
+#[derive(Component, Debug)]
+pub struct Capitalizable;
+
+#[derive(Resource)]
+pub struct CapitalizeToggle(pub bool);
+
+#[derive(Component, PartialEq, Clone)]
 enum KeyType {
     Letter,
     Function,
     Number,
-}
-
-#[wasm_bindgen]
-extern "C" {
-
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn log(s: &str);
-
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    pub fn log_u32(a: u32);
-
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    pub fn log_many(a: &str, b: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 pub fn setup_keyboard(builder: &mut ChildBuilder, font: Handle<Font>) {
@@ -42,7 +32,7 @@ pub fn setup_keyboard(builder: &mut ChildBuilder, font: Handle<Font>) {
         .spawn(NodeBundle {
             style: Style {
                 display: Display::Grid,
-                size: Size::width(Val::Percent(100.0)),
+                size: Size::width(Val::Percent(90.0)),
                 grid_template_columns: vec![GridTrack::flex(1.0)],
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
@@ -56,10 +46,11 @@ pub fn setup_keyboard(builder: &mut ChildBuilder, font: Handle<Font>) {
                     GridTrack::auto(),
                     GridTrack::auto(),
                     GridTrack::auto(),
+                    GridTrack::flex(1.0),
                 ],
                 ..default()
             },
-            background_color: BackgroundColor(Color::DARK_GRAY),
+            background_color: BackgroundColor(Color::rgb(0.3, 0.3, 0.3)),
             ..default()
         })
         .with_children(|builder| {
@@ -123,16 +114,15 @@ fn spawn_keyboard_row(builder: &mut ChildBuilder, font: Handle<Font>, row_keys: 
     builder
         .spawn(NodeBundle {
             style: Style {
-                // fill the entire window
-                size: Size::all(Val::Percent(50.)),
+                size: Size::all(Val::Percent(80.)),
                 flex_direction: FlexDirection::Row,
 
                 align_items: AlignItems::Center,
                 padding: UiRect {
                     left: Val::Percent(5.),
                     right: Val::Percent(5.),
-                    top: Val::Percent(0.),
-                    bottom: Val::Percent(0.),
+                    top: Val::Percent(0.1),
+                    bottom: Val::Percent(0.1),
                 },
                 justify_content: JustifyContent::Center,
                 // gap: Size {
@@ -145,7 +135,6 @@ fn spawn_keyboard_row(builder: &mut ChildBuilder, font: Handle<Font>, row_keys: 
             ..Default::default()
         })
         .with_children(|builder| {
-            let key_type: KeyType;
             for key in row_keys.chars() {
                 keyboard_button(builder, font.clone(), key);
             }
@@ -153,16 +142,13 @@ fn spawn_keyboard_row(builder: &mut ChildBuilder, font: Handle<Font>, row_keys: 
 }
 
 fn keyboard_button(builder: &mut ChildBuilder, font: Handle<Font>, key: char) {
-    let number_set = "1234567890";
-    let function_set = "<^ ";
-    let letter_set = "abcdefghijklmnopqrstuvwxyz";
-
     let key_type: KeyType;
-    if letter_set.contains(key) {
+
+    if LETTER_SET.contains(key) {
         key_type = KeyType::Letter;
-    } else if number_set.contains(key) {
+    } else if NUMBER_SET.contains(key) {
         key_type = KeyType::Number;
-    } else if function_set.contains(key) {
+    } else if FUNCTION_SET.contains(key) {
         key_type = KeyType::Function;
     } else {
         key_type = KeyType::Letter; //console_log!("a key is not defined as a type")
@@ -174,16 +160,19 @@ fn keyboard_button(builder: &mut ChildBuilder, font: Handle<Font>, key: char) {
                 size: Size::width(Val::Percent(100.0)),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
+                padding: UiRect::horizontal(Val::Px(3.0)),
                 ..default()
             },
             ..default()
         })
         .with_children(|parent| {
+            //let keyin = key_type.clone();
             parent
                 .spawn((
                     ButtonBundle {
                         style: Style {
-                            size: Size::new(Val::Px(40.0), Val::Px(40.0)),
+                            //size: Size::new(Val::Px(40.0), Val::Px(40.0)),
+                            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                             // horizontally center child text
                             justify_content: JustifyContent::Center,
                             // vertically center child text
@@ -194,52 +183,41 @@ fn keyboard_button(builder: &mut ChildBuilder, font: Handle<Font>, key: char) {
                         ..default()
                     },
                     KeyBoardButton(key),
-                    key_type,
+                    key_type.clone(),
                 ))
                 .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        key.to_string(),
-                        TextStyle {
-                            font,
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
+                    let ent_text = parent
+                        .spawn(TextBundle::from_section(
+                            key.to_string(),
+                            TextStyle {
+                                font,
+                                font_size: 32.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                        ))
+                        .id();
+
+                    if key_type == KeyType::Letter {
+                        parent.add_command(bevy::ecs::system::Insert {
+                            entity: ent_text,
+                            bundle: Capitalizable,
+                        });
+                    }
                 });
         });
 }
 
-pub fn keyboard_system(
-    mut interaction_query: Query<
-        (
-            &Interaction,
-            &mut BackgroundColor,
-            &Children,
-            &KeyBoardButton,
-        ),
-        (Changed<Interaction>, With<Button>, With<KeyBoardButton>),
-    >,
-    mut text_query: Query<&mut Text>,
-    mut player_text: ResMut<PlayerName>,
+pub fn capitalize_system(
+    mut letter_query: Query<&mut Text, With<Capitalizable>>,
+    c_toggle: Res<CapitalizeToggle>,
 ) {
-    for (interaction, mut color, children, keyboard_button) in &mut interaction_query {
-        let mut text = text_query.get_mut(children[0]).unwrap();
-        match *interaction {
-            Interaction::Clicked => {
-                //text.sections[0].value = "Moon!".to_string();
-                player_text.0.pop();
-                console_log!("new name {:?}", player_text.0);
-
-                *color = PRESSED_BUTTON.into();
-            }
-            Interaction::Hovered => {
-                //text.sections[0].value = "Ready?".to_string();
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                //text.sections[0].value = "Start".to_string();
-                *color = NORMAL_BUTTON.into();
-            }
+    if c_toggle.0 {
+        for mut text in &mut letter_query {
+            text.sections[0].value = text.sections[0].value.to_ascii_uppercase();
+        }
+    } else {
+        for mut text in &mut letter_query {
+            text.sections[0].value = text.sections[0].value.to_ascii_lowercase();
         }
     }
 }

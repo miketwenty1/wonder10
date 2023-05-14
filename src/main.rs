@@ -1,21 +1,23 @@
 use bevy::prelude::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{keyboard::keyboard_system, player_name_menu::button_system};
+use crate::{
+    keyboard::CapitalizeToggle,
+    scenes::{game_play::GamePlay, player_select::PlayerSelect},
+};
 
+mod consolelog;
 mod keyboard;
-mod player_name_menu;
-//mod flexy;
+mod scenes;
 
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
-enum GameState {
+pub enum GameState {
     #[default]
-    Splash,
-    Menu,
+    PlayerSetup,
     Game,
 }
 
-#[derive(Resource)]
+#[derive(Resource, Clone)]
 pub struct PlayerName(String);
 
 #[derive(Resource)]
@@ -41,14 +43,20 @@ pub fn game(username: String, server_url: String) {
         }))
         .insert_resource(PlayerName(username))
         .insert_resource(ServerURL(server_url))
-        .add_systems(Startup, setup)
-        .add_systems(Update, button_system)
-        .add_systems(Update, keyboard_system)
+        .insert_resource(CapitalizeToggle(false))
         .add_state::<GameState>()
-        .add_systems(Startup, player_name_menu::spawn_layout)
+        .add_systems(Startup, setup)
+        .add_plugin(PlayerSelect)
+        .add_plugin(GamePlay)
         .run();
 }
 
 fn setup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
+}
+
+fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
+    for entity in &to_despawn {
+        commands.entity(entity).despawn_recursive();
+    }
 }

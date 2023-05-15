@@ -1,12 +1,16 @@
-pub mod game_grid;
+pub mod blocks_grid;
+pub mod game_layout;
+
 use bevy::prelude::*;
 
 use crate::GameState;
 
-use self::game_grid::{button_system, spawn_layout};
+use self::blocks_grid::button_system;
+use self::game_layout::spawn_layout;
 
-pub struct GamePlay;
-impl Plugin for GamePlay {
+pub struct GamePlayPlugin;
+
+impl Plugin for GamePlayPlugin {
     fn build(&self, app: &mut App) {
         app
             // OnEnter State Systems

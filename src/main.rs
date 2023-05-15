@@ -2,10 +2,17 @@ use bevy::prelude::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
+    audio::setup_music,
+    comms::CommsPlugin,
     keyboard::CapitalizeToggle,
-    scenes::{game_play::GamePlay, player_select::PlayerSelect},
+    scenes::{
+        game_play::GamePlayPlugin, instructions::InstructionsPlugin,
+        player_select::PlayerSelectPlugin,
+    },
 };
 
+mod audio;
+mod comms;
 mod consolelog;
 mod keyboard;
 mod scenes;
@@ -13,14 +20,31 @@ mod scenes;
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
 pub enum GameState {
     #[default]
-    PlayerSetup,
+    Instructions,
+    PlayerSelect,
     Game,
 }
 
-#[derive(Resource, Clone)]
-pub struct PlayerName(String);
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
+pub enum CommsApiState {
+    #[default]
+    Off,
+    SetName,
+    Move,
+    Buy,
+}
 
-#[derive(Resource)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
+pub enum MusicState {
+    #[default]
+    Off,
+    Lobby,
+}
+
+#[derive(Resource, Clone)]
+pub struct PlayerUsername(String);
+
+#[derive(Resource, Clone)]
 pub struct ServerURL(String);
 
 pub fn main() {
@@ -41,13 +65,19 @@ pub fn game(username: String, server_url: String) {
             }),
             ..default()
         }))
-        .insert_resource(PlayerName(username))
+        .insert_resource(PlayerUsername(username))
         .insert_resource(ServerURL(server_url))
         .insert_resource(CapitalizeToggle(false))
         .add_state::<GameState>()
+        .add_state::<CommsApiState>()
+        .add_state::<MusicState>()
         .add_systems(Startup, setup)
-        .add_plugin(PlayerSelect)
-        .add_plugin(GamePlay)
+        .add_systems(Startup, comms::setup::setup_comm)
+        .add_plugin(InstructionsPlugin)
+        .add_plugin(PlayerSelectPlugin)
+        .add_plugin(GamePlayPlugin)
+        .add_plugin(CommsPlugin)
+        .add_systems(OnEnter(MusicState::Lobby), setup_music)
         .run();
 }
 

@@ -1,5 +1,7 @@
 pub mod game_play;
+pub mod instructions;
 pub mod player_select;
+
 use bevy::prelude::*;
 
 fn spawn_nested_text_bundle(builder: &mut ChildBuilder, font: Handle<Font>, text: &str) {

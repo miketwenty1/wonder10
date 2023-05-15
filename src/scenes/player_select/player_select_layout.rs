@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::{
     comms::set_name::{api_send_username, SetUsernameChannel},
     keyboard::{setup_keyboard, CapitalizeToggle, KeyBoardButton},
-    CommsApiState, GameState, PlayerUsername, ServerURL,
+    CommsApiState, PlayerUsername, ServerURL,
 };
 
 use super::super::spawn_nested_text_bundle;
@@ -169,7 +169,7 @@ pub fn button_system(
         (Changed<Interaction>, With<Button>, Without<KeyBoardButton>),
     >,
     mut text_query: Query<&mut Text>,
-    mut game_state: ResMut<NextState<GameState>>,
+
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
     set_username_channel: Res<SetUsernameChannel>,
     api_server: Res<ServerURL>,
@@ -184,7 +184,6 @@ pub fn button_system(
 
                 api_send_username(&set_username_channel, &api_server, &player_username);
                 api_name_set_state.set(CommsApiState::SetName);
-                game_state.set(GameState::Game);
             }
             Interaction::Hovered => {
                 text.sections[0].value = "Ready?".to_string();

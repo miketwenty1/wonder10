@@ -1,4 +1,4 @@
-use crate::{CommsApiState, PlayerUsername, ServerURL};
+use crate::{CommsApiState, GameState, PlayerUsername, ServerURL};
 use async_channel::{Receiver, Sender};
 use bevy::{prelude::*, tasks::IoTaskPool};
 use serde::{Deserialize, Serialize};
@@ -22,6 +22,7 @@ pub fn api_receive_username(
     api_timer: Res<ApiPollingTimer>,
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
     mut player_username: ResMut<PlayerUsername>,
+    mut game_state: ResMut<NextState<GameState>>,
 ) {
     if api_timer.timer.finished() {
         info!("timer finished");
@@ -35,6 +36,7 @@ pub fn api_receive_username(
                     Ok(o) => {
                         info!("{:?}", o);
                         player_username.0 = o.name;
+                        game_state.set(GameState::Game);
                         api_name_set_state.set(CommsApiState::Off);
                     }
                     Err(e) => {

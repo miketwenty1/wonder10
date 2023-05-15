@@ -1,9 +1,14 @@
 use bevy::prelude::*;
+
+use super::ulam::get_25_blocks;
 #[derive(Component, Debug)]
 pub struct GameLayout;
 
 #[derive(Component, Debug)]
 pub struct BlockButton(Color);
+
+#[derive(Component, Debug)]
+pub struct BlockHeightText(usize);
 
 // const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
@@ -41,10 +46,11 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
             GameLayout,
         ))
         .with_children(|builder| {
-            let test_vec = [
-                "16", "15", "14", "13", "12", "17", "4", "3", "2", "11", "18", "5", "0", "1", "10",
-                "19", "6", "7", "8", "9", "20", "21", "22", "23", "24",
-            ];
+            // let test_vec = [
+            //     "16", "15", "14", "13", "12", "17", "4", "3", "2", "11", "18", "5", "0", "1", "10",
+            //     "19", "6", "7", "8", "9", "20", "21", "22", "23", "24",
+            // ];
+            let origin_vec = get_25_blocks(0);
 
             let test_color_vec = [
                 Color::AZURE,
@@ -74,7 +80,7 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
                 Color::TOMATO,
             ];
 
-            for (block_num, block_color) in test_vec.iter().zip(test_color_vec.iter()) {
+            for (block_num, block_color) in origin_vec.iter().zip(test_color_vec.iter()) {
                 builder
                     .spawn(NodeBundle {
                         //background_color: BackgroundColor(*block_color),
@@ -130,13 +136,18 @@ fn spawn_block_button_bundle(
                     BlockButton(block_color),
                 ))
                 .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        block_num,
-                        TextStyle {
-                            font,
-                            font_size: 60.0,
-                            color: Color::rgb(0.0, 0.0, 0.0),
-                        },
+                    // crash if this fails
+                    let number = block_num.parse::<usize>().unwrap();
+                    parent.spawn((
+                        TextBundle::from_section(
+                            block_num,
+                            TextStyle {
+                                font,
+                                font_size: 60.0,
+                                color: Color::rgb(0.0, 0.0, 0.0),
+                            },
+                        ),
+                        BlockHeightText(number),
                     ));
                 });
         });
@@ -145,13 +156,16 @@ fn spawn_block_button_bundle(
 #[allow(clippy::type_complexity)]
 pub fn button_system(
     mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor, &BlockButton),
+        (&Interaction, &mut BackgroundColor, &BlockButton, &Children),
         (Changed<Interaction>, With<BlockButton>),
     >,
+    block_text_query: Query<&BlockHeightText>,
 ) {
-    for (interaction, mut color, block_comp) in &mut interaction_query {
+    for (interaction, mut color, block_comp, children) in &mut interaction_query {
+        let block_number = block_text_query.get(children[0]).unwrap().0;
         match *interaction {
             Interaction::Clicked => {
+                info!("clicked block {}", block_number);
                 *color = PRESSED_BUTTON.into();
             }
             Interaction::Hovered => {

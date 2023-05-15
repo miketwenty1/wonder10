@@ -1,5 +1,7 @@
+mod block_details_overlay;
 pub mod blocks_grid;
 pub mod game_layout;
+mod ulam;
 
 use bevy::prelude::*;
 

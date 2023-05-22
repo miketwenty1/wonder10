@@ -1,13 +1,13 @@
+// we need a button to view details of blocks
 use crate::PlayerUsername;
 
 use super::blocks_grid::spawn_blocks;
 use bevy::prelude::*;
 
-#[derive(Component, Debug)]
-pub struct GameLayout;
+const NORMAL_BUTTON: Color = Color::DARK_GRAY;
 
 #[derive(Component, Debug)]
-pub struct BlockButton(Color);
+pub struct GameLayout;
 
 #[derive(Component, Debug)]
 pub struct LocationText;
@@ -17,6 +17,12 @@ pub struct UsernameText;
 
 #[derive(Component, Debug)]
 pub struct BalanceText;
+
+#[derive(Component, Debug)]
+pub struct BlockDetailsButton;
+
+#[derive(Component, Debug)]
+pub struct MoveButton;
 
 pub fn spawn_layout(
     mut commands: Commands,
@@ -81,6 +87,19 @@ pub fn spawn_layout(
                     ..default()
                 })
                 .with_children(|builder| spawn_blocks(builder, font.clone()));
+            builder
+                .spawn(NodeBundle {
+                    style: Style {
+                        display: Display::Grid,
+                        justify_items: JustifyItems::Center,
+                        grid_column: GridPlacement::start(2),
+                        grid_row: GridPlacement::start(3),
+                        //padding: UiRect::all(Val::Px(20.0)),
+                        ..default()
+                    },
+                    ..default()
+                })
+                .with_children(|builder| spawn_select_block_buttons(builder, font.clone()));
         });
 }
 
@@ -124,4 +143,80 @@ fn spawn_balance_text(builder: &mut ChildBuilder, font: Handle<Font>, text: &str
         ),
         BalanceText,
     ));
+}
+
+fn spawn_select_block_buttons(builder: &mut ChildBuilder, font: Handle<Font>) {
+    builder
+        .spawn(NodeBundle {
+            style: Style {
+                size: Size::width(Val::Percent(100.0)),
+                flex_direction: FlexDirection::Row,
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::Center,
+                //padding: UiRect::all(Val::Px(10.0)),
+                margin: UiRect::all(Val::Px(10.0)),
+                ..default()
+            },
+            ..default()
+        })
+        .with_children(|parent| {
+            parent
+                .spawn((
+                    ButtonBundle {
+                        style: Style {
+                            //size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                            // horizontally center child text
+                            justify_content: JustifyContent::Center,
+                            // vertically center child text
+                            align_items: AlignItems::Center,
+                            //padding: UiRect::all(Val::Px(10.0)),
+                            margin: UiRect::all(Val::Px(10.0)),
+                            size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+
+                            ..default()
+                        },
+                        background_color: NORMAL_BUTTON.into(),
+                        ..default()
+                    },
+                    MoveButton,
+                ))
+                .with_children(|parent| {
+                    parent.spawn(TextBundle::from_section(
+                        "Move",
+                        TextStyle {
+                            font: font.clone(),
+                            font_size: 32.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                    ));
+                });
+            parent
+                .spawn((
+                    ButtonBundle {
+                        style: Style {
+                            //size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                            // horizontally center child text
+                            justify_content: JustifyContent::Center,
+                            // vertically center child text
+                            align_items: AlignItems::Center,
+                            //padding: UiRect::all(Val::Px(10.0)),
+                            size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                            ..default()
+                        },
+                        background_color: NORMAL_BUTTON.into(),
+                        ..default()
+                    },
+                    BlockDetailsButton,
+                ))
+                .with_children(|parent| {
+                    parent.spawn(TextBundle::from_section(
+                        "Details",
+                        TextStyle {
+                            font,
+                            font_size: 32.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                    ));
+                });
+        });
 }

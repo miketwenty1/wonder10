@@ -5,14 +5,31 @@ use super::ulam::get_25_blocks;
 pub struct GameLayout;
 
 #[derive(Component, Debug)]
-pub struct BlockButton(Color);
+pub struct BlockButton {
+    pub color: Color,
+    pub paid_color: Color,
+    pub grid_offset_x: i32,
+    pub grid_offset_y: i32,
+    pub height: u32,
+}
 
-#[derive(Component, Debug)]
-pub struct BlockHeightText(usize);
+// #[derive(Component, Debug)]
+// pub struct BlockHeightText(pub usize);
 
-// const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
-const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
-const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
+#[derive(Resource, Clone, Debug)]
+pub struct SelectedBlock {
+    pub entity: Entity,
+    pub height: u32,
+}
+
+impl Default for SelectedBlock {
+    fn default() -> Self {
+        Self {
+            entity: Entity::PLACEHOLDER,
+            height: 0,
+        }
+    }
+}
 
 pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
     builder
@@ -46,41 +63,9 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
             GameLayout,
         ))
         .with_children(|builder| {
-            // let test_vec = [
-            //     "16", "15", "14", "13", "12", "17", "4", "3", "2", "11", "18", "5", "0", "1", "10",
-            //     "19", "6", "7", "8", "9", "20", "21", "22", "23", "24",
-            // ];
             let origin_vec = get_25_blocks(0);
 
-            let test_color_vec = [
-                Color::AZURE,
-                Color::BEIGE,
-                Color::BISQUE,
-                Color::FUCHSIA,
-                Color::BLUE,
-                Color::CRIMSON,
-                Color::CYAN,
-                Color::DARK_GRAY,
-                Color::DARK_GREEN,
-                Color::GOLD,
-                Color::GREEN,
-                Color::INDIGO,
-                Color::LIME_GREEN,
-                Color::MAROON,
-                Color::MIDNIGHT_BLUE,
-                Color::NAVY,
-                Color::OLIVE,
-                Color::ORANGE,
-                Color::ORANGE_RED,
-                Color::PINK,
-                Color::PURPLE,
-                Color::RED,
-                Color::SALMON,
-                Color::TEAL,
-                Color::TOMATO,
-            ];
-
-            for (block_num, block_color) in origin_vec.iter().zip(test_color_vec.iter()) {
+            for grid_block in origin_vec.iter() {
                 builder
                     .spawn(NodeBundle {
                         //background_color: BackgroundColor(*block_color),
@@ -95,7 +80,14 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
                         ..default()
                     })
                     .with_children(|builder| {
-                        spawn_block_button_bundle(builder, font.clone(), block_num, *block_color);
+                        spawn_block_button_bundle(
+                            builder,
+                            font.clone(),
+                            grid_block.value,
+                            Color::DARK_GRAY,
+                            grid_block.grid_x,
+                            grid_block.grid_y,
+                        );
                     });
             }
         });
@@ -104,8 +96,10 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
 fn spawn_block_button_bundle(
     builder: &mut ChildBuilder,
     font: Handle<Font>,
-    block_num: &str,
+    block_num: u32,
     block_color: Color,
+    grid_offset_x: i32,
+    grid_offset_y: i32,
 ) {
     builder
         .spawn(NodeBundle {
@@ -133,48 +127,26 @@ fn spawn_block_button_bundle(
                         background_color: BackgroundColor(block_color),
                         ..default()
                     },
-                    BlockButton(block_color),
+                    BlockButton {
+                        color: block_color,
+                        paid_color: block_color,
+                        grid_offset_x,
+                        grid_offset_y,
+                        height: block_num,
+                    },
                 ))
                 .with_children(|parent| {
-                    // crash if this fails
-                    let number = block_num.parse::<usize>().unwrap();
                     parent.spawn((
                         TextBundle::from_section(
-                            block_num,
+                            block_num.to_string(),
                             TextStyle {
                                 font,
                                 font_size: 60.0,
                                 color: Color::rgb(0.0, 0.0, 0.0),
                             },
                         ),
-                        BlockHeightText(number),
+                        //BlockHeightText(block_num.to_string()),
                     ));
                 });
         });
-}
-
-#[allow(clippy::type_complexity)]
-pub fn button_system(
-    mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor, &BlockButton, &Children),
-        (Changed<Interaction>, With<BlockButton>),
-    >,
-    block_text_query: Query<&BlockHeightText>,
-) {
-    for (interaction, mut color, block_comp, children) in &mut interaction_query {
-        let block_number = block_text_query.get(children[0]).unwrap().0;
-        match *interaction {
-            Interaction::Clicked => {
-                info!("clicked block {}", block_number);
-                *color = PRESSED_BUTTON.into();
-            }
-            Interaction::Hovered => {
-                //text.sections[0].value = "Buy?".to_string();
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                *color = BackgroundColor(block_comp.0);
-            }
-        }
-    }
 }

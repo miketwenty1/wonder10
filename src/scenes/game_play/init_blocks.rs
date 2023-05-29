@@ -10,5 +10,5 @@ pub fn init_block_data(
     mut api_state: ResMut<NextState<CommsApiState>>,
 ) {
     player_move_event_writer.send(PlayerMove { block: 0 });
-    api_state.set(CommsApiState::Off);
+    //api_state.set(CommsApiState::Off);
 }

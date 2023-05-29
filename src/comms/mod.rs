@@ -25,8 +25,15 @@ pub struct BlockDataFromServer {
 
 #[derive(Debug, Clone, Serialize, Validate, Deserialize)]
 pub struct BlockData {
+    pub height: u32,
+    pub hash: String,
+    pub x: i32,
+    pub y: i32,
+    pub owner: String,
+    pub last_payment_amount: u64,
     pub color: String,
 }
+
 pub struct CommsPlugin;
 
 impl Plugin for CommsPlugin {

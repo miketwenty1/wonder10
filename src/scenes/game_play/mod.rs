@@ -33,7 +33,7 @@ impl Plugin for GamePlayPlugin {
             .add_event::<PlayerMove>()
             .add_event::<ServerBocksIn>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)
-            .add_systems(Startup, init_blocks::init_block_data)
+            //.add_systems(Startup, init_blocks::init_block_data)
             .add_systems(
                 Update,
                 update_listen_for_player_move.run_if(in_state(GameState::Game)),

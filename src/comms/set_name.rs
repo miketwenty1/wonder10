@@ -13,44 +13,8 @@ pub struct SetUsernameChannel {
 }
 
 #[derive(Debug, Serialize, Validate, Deserialize)]
-pub struct ResUsernameSet {
+pub struct RespUsernameSet {
     pub name: String,
-}
-
-pub fn api_receive_username(
-    set_username_channel: ResMut<SetUsernameChannel>,
-    api_timer: Res<ApiPollingTimer>,
-    mut api_name_set_state: ResMut<NextState<CommsApiState>>,
-    mut player_username: ResMut<PlayerUsername>,
-    mut game_state: ResMut<NextState<GameState>>,
-) {
-    if api_timer.timer.finished() {
-        info!("timer finished");
-        let api_res = set_username_channel.rx.try_recv();
-
-        match api_res {
-            Ok(r) => {
-                info!("response to setname: {}", r);
-                let r_invoice_result = serde_json::from_str::<ResUsernameSet>(&r);
-                match r_invoice_result {
-                    Ok(o) => {
-                        info!("{:?}", o);
-                        player_username.0 = o.name;
-                        game_state.set(GameState::Game);
-                        api_name_set_state.set(CommsApiState::Off);
-                    }
-                    Err(e) => {
-                        info!("no new invoice data to get: {}", e);
-                    }
-                };
-                r
-            }
-            Err(e) => {
-                info!("response to setname: {}", e);
-                e.to_string()
-            }
-        };
-    }
 }
 
 #[allow(unused_must_use)]
@@ -74,4 +38,40 @@ pub fn api_send_username(
             .unwrap();
         cc.try_send(api_response_text);
     });
+}
+
+pub fn api_receive_username(
+    set_username_channel: ResMut<SetUsernameChannel>,
+    api_timer: Res<ApiPollingTimer>,
+    mut api_name_set_state: ResMut<NextState<CommsApiState>>,
+    mut player_username: ResMut<PlayerUsername>,
+    mut game_state: ResMut<NextState<GameState>>,
+) {
+    if api_timer.timer.finished() {
+        info!("timer finished");
+        let api_res = set_username_channel.rx.try_recv();
+
+        match api_res {
+            Ok(r) => {
+                info!("response to setname: {}", r);
+                let r_invoice_result = serde_json::from_str::<RespUsernameSet>(&r);
+                match r_invoice_result {
+                    Ok(o) => {
+                        info!("{:?}", o);
+                        player_username.0 = o.name;
+                        game_state.set(GameState::Game);
+                        api_name_set_state.set(CommsApiState::Off);
+                    }
+                    Err(e) => {
+                        info!("no new invoice data to get: {}", e);
+                    }
+                };
+                r
+            }
+            Err(e) => {
+                info!("response to setname: {}", e);
+                e.to_string()
+            }
+        };
+    }
 }

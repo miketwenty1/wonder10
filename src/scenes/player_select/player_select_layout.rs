@@ -63,7 +63,13 @@ pub fn spawn_layout(
                     ..default()
                 })
                 .with_children(|builder| {
-                    spawn_nested_text_bundle(builder, font.clone(), "Choose a name:");
+                    spawn_nested_text_bundle(
+                        builder,
+                        font.clone(),
+                        "Choose a name:",
+                        32.0,
+                        Color::BLACK,
+                    );
                 });
             // name input
             builder

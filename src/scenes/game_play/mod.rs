@@ -2,6 +2,7 @@ mod block_details_overlay;
 pub mod blocks_grid;
 pub mod events;
 pub mod game_layout;
+mod init_blocks;
 mod ulam;
 mod update_systems;
 
@@ -10,7 +11,7 @@ use bevy::prelude::*;
 use crate::GameState;
 
 use self::blocks_grid::SelectedBlock;
-use self::events::{BlockButtonSelected, PlayerMove};
+use self::events::{BlockButtonSelected, PlayerMove, ServerBocksIn};
 use self::game_layout::spawn_layout;
 use self::update_systems::{
     button_interaction_system, update_listen_for_player_move, update_listen_for_player_select,
@@ -30,7 +31,9 @@ impl Plugin for GamePlayPlugin {
             .init_resource::<SelectedBlock>()
             .add_event::<BlockButtonSelected>()
             .add_event::<PlayerMove>()
+            .add_event::<ServerBocksIn>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)
+            .add_systems(Startup, init_blocks::init_block_data)
             .add_systems(
                 Update,
                 update_listen_for_player_move.run_if(in_state(GameState::Game)),

@@ -105,14 +105,24 @@ pub fn spawn_layout(
 
 fn spawn_location_text(builder: &mut ChildBuilder, font: Handle<Font>, text: &str) {
     builder.spawn((
-        TextBundle::from_section(
-            format!("Block Location: {}", text),
-            TextStyle {
-                font,
-                font_size: 32.0,
-                color: Color::BLACK,
-            },
-        ),
+        TextBundle::from_sections([
+            TextSection::new(
+                "Block Location: ",
+                TextStyle {
+                    font: font.clone(),
+                    font_size: 32.0,
+                    color: Color::BLACK,
+                },
+            ),
+            TextSection::new(
+                text,
+                TextStyle {
+                    font,
+                    font_size: 32.0,
+                    color: Color::BLACK,
+                },
+            ),
+        ]),
         LocationText,
     ));
 }

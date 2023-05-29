@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::ulam::get_25_blocks;
 #[derive(Component, Debug)]
-pub struct GameLayout;
+pub struct GridLayout;
 
 #[derive(Component, Debug)]
 pub struct BlockButton {
@@ -12,9 +12,6 @@ pub struct BlockButton {
     pub grid_offset_y: i32,
     pub height: u32,
 }
-
-// #[derive(Component, Debug)]
-// pub struct BlockHeightText(pub usize);
 
 #[derive(Resource, Clone, Debug)]
 pub struct SelectedBlock {
@@ -60,7 +57,7 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
                 background_color: BackgroundColor(Color::BLACK),
                 ..default()
             },
-            GameLayout,
+            GridLayout,
         ))
         .with_children(|builder| {
             let origin_vec = get_25_blocks(0);

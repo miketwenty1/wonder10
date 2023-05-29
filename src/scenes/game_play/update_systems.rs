@@ -1,25 +1,32 @@
 use bevy::prelude::*;
 use ulam::{calc_coord::calc_xy, value_of_xy};
 
-use crate::scenes::game_play::{PRESSED_BUTTON, SELECTED_BUTTON};
+use crate::{
+    scenes::game_play::{PRESSED_BUTTON, SELECTED_BUTTON},
+    CommsApiState, PlayerLocation,
+};
 
 use super::{
     blocks_grid::{BlockButton, SelectedBlock},
     events::{BlockButtonSelected, PlayerMove},
+    game_layout::LocationText,
     HOVERED_BUTTON,
 };
 
 pub fn update_listen_for_player_move(
     //mut block_selected_event_reader: EventReader<BlockButtonSelected>,
     mut player_move_event_reader: EventReader<PlayerMove>,
-    mut block_query: Query<(Entity, &mut BlockButton, &Children), With<BlockButton>>,
+    mut block_query: Query<
+        (Entity, &mut BlockButton, &Children, &mut Visibility),
+        With<BlockButton>,
+    >,
     mut button_text_query: Query<&mut Text>,
     mut color_query: Query<&mut BackgroundColor>,
     selected_block: ResMut<SelectedBlock>,
 ) {
     for event in player_move_event_reader.iter() {
         let (x, y) = calc_xy(event.block);
-        for (id, mut block_button, children) in block_query.iter_mut() {
+        for (id, mut block_button, children, mut visibility) in block_query.iter_mut() {
             let mut text = button_text_query.get_mut(children[0]).unwrap();
             let new_block_x = block_button.grid_offset_x + x;
             let new_block_y = block_button.grid_offset_y + y;
@@ -27,11 +34,17 @@ pub fn update_listen_for_player_move(
             block_button.height = new_block_val;
             text.sections[0].value = new_block_val.to_string();
 
+            if new_block_val > 800_000 {
+                *visibility = Visibility::Hidden;
+            } else {
+                *visibility = Visibility::Visible;
+            }
+
             if selected_block.entity != id {
                 color_query.get_mut(id).unwrap().0 = block_button.paid_color;
             }
         }
-        info!("Move detected")
+        //info!("Move detected")
     }
 }
 
@@ -60,6 +73,9 @@ pub fn button_interaction_system(
     >,
     //mut color_query: Query<&mut BackgroundColor>,
     mut selected_block: ResMut<SelectedBlock>,
+    mut player_location: ResMut<PlayerLocation>,
+    mut location_text_query: Query<&mut Text, With<LocationText>>,
+    mut api_state: ResMut<NextState<CommsApiState>>,
 ) {
     //button_entity,
     for (button_entity, interaction, mut bg_color, block_comp) in &mut interaction_query {
@@ -67,12 +83,16 @@ pub fn button_interaction_system(
             Interaction::Clicked => {
                 //info!("clicked block {}", block_comp.value);
                 if selected_block.entity == button_entity {
-                    selected_block.entity = Entity::PLACEHOLDER;
-                    selected_block.height = 0;
+                    selected_block.entity = Entity::PLACEHOLDER; // used to make it where no block is highlighted after a doubleclick
+                    selected_block.height = 999_999_999; // this done so no block is highlighted if you hover your mouse over it.
 
                     player_move_event_writer.send(PlayerMove {
                         block: block_comp.height,
                     });
+                    location_text_query.get_single_mut().unwrap().sections[1].value =
+                        block_comp.height.to_string();
+                    player_location.0 = block_comp.height;
+                    api_state.set(CommsApiState::Move);
                 } else {
                     selected_block.entity = button_entity;
                     selected_block.height = block_comp.height;
@@ -81,8 +101,6 @@ pub fn button_interaction_system(
                     });
                 }
                 *bg_color = PRESSED_BUTTON.into();
-                // *visibility = Visibility::Hidden;
-                // block_comp.color = selected_color;
             }
             Interaction::Hovered => {
                 //text.sections[0].value = "Buy?".to_string();

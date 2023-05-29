@@ -5,3 +5,5 @@ pub struct BlockButtonSelected {
 pub struct PlayerMove {
     pub block: u32,
 }
+
+pub struct ServerBocksIn;

@@ -45,6 +45,9 @@ pub enum MusicState {
 pub struct PlayerUsername(String);
 
 #[derive(Resource, Clone)]
+pub struct PlayerLocation(u32);
+
+#[derive(Resource, Clone)]
 pub struct ServerURL(String);
 
 pub fn main() {
@@ -66,6 +69,7 @@ pub fn game(username: String, server_url: String) {
             ..default()
         }))
         .insert_resource(PlayerUsername(username))
+        .insert_resource(PlayerLocation(799999))
         .insert_resource(ServerURL(server_url))
         .insert_resource(CapitalizeToggle(false))
         .add_state::<GameState>()

@@ -15,6 +15,6 @@ impl Default for ApiPollingTimer {
     }
 }
 
-pub fn tick_enemy_spawn_timer(mut api_timer: ResMut<ApiPollingTimer>, time: Res<Time>) {
+pub fn tick_api_receive_timer(mut api_timer: ResMut<ApiPollingTimer>, time: Res<Time>) {
     api_timer.timer.tick(time.delta());
 }

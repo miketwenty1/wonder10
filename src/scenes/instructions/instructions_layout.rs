@@ -8,7 +8,7 @@ const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
-const INTRO_TEXT: &str = "This game is in alpha, be prepaed to lose all funds. Contact me on telegram @miketwenty1 to be added to the SatoshiSettlers group if you want to help continue playtesting. The current goal of the game is to own land.";
+const INTRO_TEXT: &str = "This game is in alpha, be prepaed to lose all funds. (seriously!)\nJoin the discord\nhttps://discord.gg/wnXv4mSk\n(link expires June 4th).\nThe current goal of the game is to own land. If someone steals your block you get paid back + 10%! This game uses LN Address for refunds. If you don't have a LN Address download the ZEBEDEE app and login with ZEBEDEE otherwise use any valid LN Address for refunds.\nPick a Player Name and then have fun.\n\nInstructions:\nDouble click a block to move or use the move button and type in a block height. Click \"Details\" to look into a block.";
 #[derive(Component, Debug)]
 pub struct InstructionMenu;
 
@@ -44,7 +44,7 @@ pub fn spawn_layout(mut commands: Commands, asset_server: Res<AssetServer>) {
                     ..default()
                 })
                 .with_children(|builder| {
-                    spawn_nested_text_bundle(builder, font.clone(), INTRO_TEXT);
+                    spawn_nested_text_bundle(builder, font.clone(), INTRO_TEXT, 20.0, Color::BLACK);
                 });
             // name input
             builder
@@ -52,7 +52,7 @@ pub fn spawn_layout(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        padding: UiRect::all(Val::Px(6.0)),
+                        padding: UiRect::all(Val::Px(2.0)),
                         ..default()
                     },
                     ..default()

@@ -8,7 +8,7 @@ pub struct PlayerMove {
 
 pub struct ServerGameBocksIn;
 
-pub struct ServerBlockchainBocksIn;
+pub struct ServerBlockchainBlocksIn;
 
 pub struct BlockDetailClick {
     pub block: u32,

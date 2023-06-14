@@ -15,9 +15,7 @@ use validator::Validate;
 use self::{
     api_timer::{tick_api_receive_timer, ApiPollingTimer},
     block_details::{api_receive_blockchain_block, api_request_blockchain_block},
-    player_move::{
-        api_receive_player_movement, api_send_player_move, update_blocks_from_server_on_move,
-    },
+    player_move::{api_receive_player_movement, api_send_player_move},
     set_name::api_receive_username,
 };
 
@@ -27,7 +25,7 @@ pub struct GameBlockDataFromServer {
 }
 
 #[derive(Resource, Clone, Debug, Default, Validate, Deserialize)]
-pub struct BlockchainDataFromServer {
+pub struct BlockchainBlockDataFromServer {
     pub blocks: HashMap<String, BlockchainBlock>,
 }
 
@@ -76,6 +74,8 @@ impl Plugin for CommsPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ApiPollingTimer>()
             .init_resource::<GameBlockDataFromServer>()
+            .init_resource::<BlockchainBlockDataFromServer>()
+            // EVERY STATE FOR RECEIVING API CALLS NEEDS TO TICK
             .add_systems(
                 Update,
                 tick_api_receive_timer.run_if(in_state(CommsApiState::SetName).or_else(
@@ -95,7 +95,6 @@ impl Plugin for CommsPlugin {
             .add_systems(
                 Update,
                 api_receive_blockchain_block.run_if(in_state(CommsApiState::BlockDetails)),
-            )
-            .add_systems(Update, update_blocks_from_server_on_move);
+            );
     }
 }

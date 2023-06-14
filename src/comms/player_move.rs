@@ -1,16 +1,14 @@
 use crate::{
-    comms::BlockDataFromServer,
+    comms::GameBlockDataFromServer,
     scenes::game_play::{
         blocks_grid::BlockButton,
-        events::{PlayerMove, ServerBocksIn},
+        events::{PlayerMove, ServerGameBocksIn},
     },
     CommsApiState, ServerURL,
 };
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
 use bevy::tasks::IoTaskPool;
-use serde::{Deserialize, Serialize};
-use validator::Validate;
 
 use super::api_timer::ApiPollingTimer;
 
@@ -51,8 +49,8 @@ pub fn api_receive_player_movement(
     set_player_move_channel: ResMut<PlayerMovementChannel>,
     api_timer: Res<ApiPollingTimer>,
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
-    mut current_block_server_data: ResMut<BlockDataFromServer>,
-    mut server_block_in_event: EventWriter<ServerBocksIn>,
+    mut current_block_server_data: ResMut<GameBlockDataFromServer>,
+    mut server_block_in_event: EventWriter<ServerGameBocksIn>,
 ) {
     if api_timer.timer.finished() {
         let api_res = set_player_move_channel.rx.try_recv();
@@ -60,14 +58,14 @@ pub fn api_receive_player_movement(
         match api_res {
             Ok(r) => {
                 info!("response to move player: {}", r);
-                let r_invoice_result = serde_json::from_str::<BlockDataFromServer>(&r);
+                let r_invoice_result = serde_json::from_str::<GameBlockDataFromServer>(&r);
                 match r_invoice_result {
                     Ok(server_block_data) => {
                         info!("{:?}", server_block_data);
                         *current_block_server_data = server_block_data;
 
                         api_name_set_state.set(CommsApiState::Off);
-                        server_block_in_event.send(ServerBocksIn);
+                        server_block_in_event.send(ServerGameBocksIn);
                     }
                     Err(e) => {
                         info!("player move fail: {}", e);
@@ -84,10 +82,10 @@ pub fn api_receive_player_movement(
 }
 
 pub fn update_blocks_from_server_on_move(
-    mut server_block_in: EventReader<ServerBocksIn>,
+    mut server_block_in: EventReader<ServerGameBocksIn>,
     mut block_query: Query<(Entity, &mut BlockButton)>,
     mut color_query: Query<&mut BackgroundColor>,
-    current_block_server_data: Res<BlockDataFromServer>,
+    current_block_server_data: Res<GameBlockDataFromServer>,
 ) {
     //info!("made it here 1");
     let block_map = &current_block_server_data.blocks;

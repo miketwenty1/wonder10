@@ -11,10 +11,11 @@ use bevy::prelude::*;
 use crate::GameState;
 
 use self::blocks_grid::SelectedBlock;
-use self::events::{BlockButtonSelected, PlayerMove, ServerBocksIn};
+use self::events::{BlockButtonSelected, BlockDetailClick, PlayerMove, ServerGameBocksIn};
 use self::game_layout::spawn_layout;
 use self::update_systems::{
-    button_interaction_system, update_listen_for_player_move, update_listen_for_player_select,
+    button_block_details, button_interaction_system, update_listen_for_player_move,
+    update_listen_for_player_select,
 };
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
@@ -31,7 +32,8 @@ impl Plugin for GamePlayPlugin {
             .init_resource::<SelectedBlock>()
             .add_event::<BlockButtonSelected>()
             .add_event::<PlayerMove>()
-            .add_event::<ServerBocksIn>()
+            .add_event::<ServerGameBocksIn>()
+            .add_event::<BlockDetailClick>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)
             //.add_systems(Startup, init_blocks::init_block_data)
             .add_systems(
@@ -45,6 +47,10 @@ impl Plugin for GamePlayPlugin {
             .add_systems(
                 Update,
                 button_interaction_system.run_if(in_state(GameState::Game)),
+            )
+            .add_systems(
+                Update,
+                button_block_details.run_if(in_state(GameState::Game)),
             );
         // .add_systems(
         //     OnExit(GameState::PlayerSetup),

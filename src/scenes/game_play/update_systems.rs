@@ -2,14 +2,14 @@ use bevy::prelude::*;
 use ulam::{calc_coord::calc_xy, value_of_xy};
 
 use crate::{
-    scenes::game_play::{PRESSED_BUTTON, SELECTED_BUTTON},
+    scenes::game_play::{NORMAL_BUTTON, PRESSED_BUTTON, SELECTED_BUTTON},
     CommsApiState, PlayerLocation,
 };
 
 use super::{
     blocks_grid::{BlockButton, SelectedBlock},
-    events::{BlockButtonSelected, PlayerMove},
-    game_layout::LocationText,
+    events::{BlockButtonSelected, BlockDetailClick, PlayerMove},
+    game_layout::{BlockDetailsButton, LocationText},
     HOVERED_BUTTON,
 };
 
@@ -112,6 +112,46 @@ pub fn button_interaction_system(
                 } else {
                     *bg_color = BackgroundColor(block_comp.paid_color);
                 }
+            }
+        }
+    }
+}
+
+#[allow(clippy::type_complexity)]
+pub fn button_block_details(
+    mut event: EventWriter<BlockDetailClick>,
+    mut interaction_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<BlockDetailsButton>),
+    >,
+    //mut color_query: Query<&mut BackgroundColor>,
+    selected_block: ResMut<SelectedBlock>,
+    mut api_state: ResMut<NextState<CommsApiState>>,
+) {
+    //button_entity,
+    for (interaction, mut bg_color) in &mut interaction_query {
+        let details_block_height = if selected_block.height > 1_000_000 {
+            0
+        } else {
+            selected_block.height
+        };
+        match *interaction {
+            Interaction::Clicked => {
+                info!("blockdetails clicked");
+
+                event.send(BlockDetailClick {
+                    block: details_block_height,
+                });
+
+                api_state.set(CommsApiState::BlockDetails);
+                *bg_color = PRESSED_BUTTON.into();
+            }
+            Interaction::Hovered => {
+                //text.sections[0].value = "Buy?".to_string();
+                *bg_color = HOVERED_BUTTON.into();
+            }
+            Interaction::None => {
+                *bg_color = BackgroundColor(NORMAL_BUTTON);
             }
         }
     }

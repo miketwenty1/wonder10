@@ -31,6 +31,7 @@ pub enum CommsApiState {
     Off,
     SetName,
     Move,
+    BlockDetails,
     Buy,
 }
 

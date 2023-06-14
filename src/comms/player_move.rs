@@ -57,7 +57,7 @@ pub fn api_receive_player_movement(
 
         match api_res {
             Ok(r) => {
-                info!("response to move player: {}", r);
+                //info!("response to move player: {}", r);
                 let r_invoice_result = serde_json::from_str::<GameBlockDataFromServer>(&r);
                 match r_invoice_result {
                     Ok(server_block_data) => {
@@ -87,11 +87,9 @@ pub fn update_blocks_from_server_on_move(
     mut color_query: Query<&mut BackgroundColor>,
     current_block_server_data: Res<GameBlockDataFromServer>,
 ) {
-    //info!("made it here 1");
     let block_map = &current_block_server_data.blocks;
 
     for _event in server_block_in.iter() {
-        //info!("made it here 2");
         for (id, mut block_button) in block_query.iter_mut() {
             //info!("made it here 3");
             let bheight = block_button.height.to_string();

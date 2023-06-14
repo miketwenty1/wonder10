@@ -35,7 +35,10 @@ impl Plugin for GamePlayPlugin {
             .add_event::<ServerGameBocksIn>()
             .add_event::<BlockDetailClick>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)
-            //.add_systems(Startup, init_blocks::init_block_data)
+            // .add_systems(
+            //     Startup,
+            //     init_blocks::init_block_data.run_if(in_state(GameState::Game)),
+            // )
             .add_systems(
                 Update,
                 update_listen_for_player_move.run_if(in_state(GameState::Game)),

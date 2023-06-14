@@ -1,4 +1,6 @@
-use crate::{CommsApiState, GameState, PlayerUsername, ServerURL};
+use crate::{
+    scenes::game_play::events::PlayerMove, CommsApiState, GameState, PlayerUsername, ServerURL,
+};
 use async_channel::{Receiver, Sender};
 use bevy::{prelude::*, tasks::IoTaskPool};
 use serde::{Deserialize, Serialize};
@@ -46,6 +48,7 @@ pub fn api_receive_username(
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
     mut player_username: ResMut<PlayerUsername>,
     mut game_state: ResMut<NextState<GameState>>,
+    mut player_move_event_writer: EventWriter<PlayerMove>,
 ) {
     if api_timer.timer.finished() {
         info!("timer finished");
@@ -60,7 +63,8 @@ pub fn api_receive_username(
                         info!("{:?}", o);
                         player_username.0 = o.name;
                         game_state.set(GameState::Game);
-                        api_name_set_state.set(CommsApiState::Off);
+                        player_move_event_writer.send(PlayerMove { block: 0 });
+                        api_name_set_state.set(CommsApiState::Move);
                     }
                     Err(e) => {
                         info!("no new invoice data to get: {}", e);

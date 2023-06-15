@@ -27,10 +27,7 @@ pub fn api_request_blockchain_block(
         let pool = IoTaskPool::get();
         let cc = block_details_channel.tx.clone();
         let server = api_server.0.to_owned();
-        info!(
-            "hey this working here buddy? -> {}/comms/blockdetails/{}",
-            server, event.block
-        );
+
         let block_copy = event.block;
         let _task = pool.spawn(async move {
             let api_response_text =

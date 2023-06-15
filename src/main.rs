@@ -26,6 +26,13 @@ pub enum GameState {
 }
 
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
+pub enum DisplayBlockDetails {
+    #[default]
+    Off,
+    On,
+}
+
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
 pub enum CommsApiState {
     #[default]
     Off,
@@ -74,6 +81,7 @@ pub fn game(username: String, server_url: String) {
         .insert_resource(ServerURL(server_url))
         .insert_resource(CapitalizeToggle(false))
         .add_state::<GameState>()
+        .add_state::<DisplayBlockDetails>()
         .add_state::<CommsApiState>()
         .add_state::<MusicState>()
         .add_systems(Startup, setup)

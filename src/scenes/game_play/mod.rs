@@ -1,9 +1,9 @@
-mod block_details_overlay;
 pub mod blocks_grid;
 pub mod events;
 pub mod game_layout;
 mod init_blocks;
 mod movement;
+mod overlays;
 mod ulam;
 mod update_systems;
 
@@ -11,7 +11,6 @@ use bevy::prelude::*;
 
 use crate::GameState;
 
-use self::block_details_overlay::display_blockchain_block_details;
 use self::blocks_grid::SelectedBlock;
 use self::events::{
     BlockButtonSelected, BlockDetailClick, PlayerMove, ServerBlockchainBlocksIn, ServerGameBocksIn,
@@ -22,6 +21,7 @@ use self::update_systems::{
     button_block_details, button_interaction_system, update_listen_for_player_move,
     update_listen_for_player_select,
 };
+use overlays::block_details_overlay::display_blockchain_block_details;
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const SELECTED_BUTTON: Color = Color::rgb(0.15, 0.15, 1.0);

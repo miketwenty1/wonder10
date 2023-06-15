@@ -28,10 +28,7 @@ pub fn api_send_player_move(
         let pool = IoTaskPool::get();
         let cc = set_player_move_channel.tx.clone();
         let server = api_server.0.to_owned();
-        info!(
-            "hey this working here buddy? -> {}/comms/move/{}",
-            server, event.block
-        );
+
         let block_copy = event.block;
         let _task = pool.spawn(async move {
             let api_response_text = reqwest::get(format!("{}/comms/move/{}", server, block_copy))

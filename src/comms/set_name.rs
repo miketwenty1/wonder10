@@ -63,7 +63,7 @@ pub fn api_receive_username(
                         info!("{:?}", o);
                         player_username.0 = o.name;
                         game_state.set(GameState::Game);
-                        player_move_event_writer.send(PlayerMove { block: 0 });
+                        player_move_event_writer.send(PlayerMove { block: 0 }); //IF YOU NEED TO SET A CUSTOM START
                         api_name_set_state.set(CommsApiState::Move);
                     }
                     Err(e) => {

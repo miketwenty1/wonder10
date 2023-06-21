@@ -1,9 +1,9 @@
+mod block_details_overlay;
 pub mod blocks_grid;
 pub mod events;
 pub mod game_layout;
-mod init_blocks;
+mod invoice_overlay;
 mod movement;
-mod overlays;
 mod ulam;
 mod update_systems;
 
@@ -11,17 +11,19 @@ use bevy::prelude::*;
 
 use crate::GameState;
 
+use self::block_details_overlay::BlockDetailsMenuPlugin;
 use self::blocks_grid::SelectedBlock;
 use self::events::{
-    BlockButtonSelected, BlockDetailClick, PlayerMove, ServerBlockchainBlocksIn, ServerGameBocksIn,
+    BlockButtonSelected, BlockDetailClick, BuyBlockRequest, PlayerMove, ServerBlockchainBlockIn,
+    ServerGameBocksIn,
 };
 use self::game_layout::spawn_layout;
+use self::invoice_overlay::InvoiceOverlay;
 use self::movement::update_blocks_from_server_on_move;
 use self::update_systems::{
     button_block_details, button_interaction_system, update_listen_for_player_move,
     update_listen_for_player_select,
 };
-use overlays::block_details_overlay::display_blockchain_block_details;
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const SELECTED_BUTTON: Color = Color::rgb(0.15, 0.15, 1.0);
@@ -38,8 +40,9 @@ impl Plugin for GamePlayPlugin {
             .add_event::<BlockButtonSelected>()
             .add_event::<PlayerMove>()
             .add_event::<ServerGameBocksIn>()
-            .add_event::<ServerBlockchainBlocksIn>()
+            .add_event::<ServerBlockchainBlockIn>()
             .add_event::<BlockDetailClick>()
+            .add_event::<BuyBlockRequest>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)
             // .add_systems(
             //     Startup,
@@ -61,11 +64,11 @@ impl Plugin for GamePlayPlugin {
                 Update,
                 button_block_details.run_if(in_state(GameState::Game)),
             )
-            .add_systems(Update, update_blocks_from_server_on_move)
-            .add_systems(Update, display_blockchain_block_details);
-        // .add_systems(
-        //     OnExit(GameState::PlayerSetup),
-        //     despawn_screen::<PlayerSelectMenu>,
-        // );
+            .add_plugin(BlockDetailsMenuPlugin)
+            .add_plugin(InvoiceOverlay)
+            .add_systems(
+                Update,
+                update_blocks_from_server_on_move.run_if(in_state(GameState::Game)),
+            );
     }
 }

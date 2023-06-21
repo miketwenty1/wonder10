@@ -1,9 +1,6 @@
 use crate::{
     comms::GameBlockDataFromServer,
-    scenes::game_play::{
-        blocks_grid::BlockButton,
-        events::{PlayerMove, ServerGameBocksIn},
-    },
+    scenes::game_play::events::{PlayerMove, ServerGameBocksIn},
     CommsApiState, ServerURL,
 };
 use async_channel::{Receiver, Sender};
@@ -49,7 +46,7 @@ pub fn api_receive_player_movement(
     mut current_block_server_data: ResMut<GameBlockDataFromServer>,
     mut server_block_in_event: EventWriter<ServerGameBocksIn>,
 ) {
-    if api_timer.timer.finished() {
+    if api_timer.timer.finished() && !set_player_move_channel.rx.is_empty() {
         let api_res = set_player_move_channel.rx.try_recv();
 
         match api_res {
@@ -60,8 +57,10 @@ pub fn api_receive_player_movement(
                     Ok(server_block_data) => {
                         info!("{:?}", server_block_data);
                         *current_block_server_data = server_block_data;
+                        if set_player_move_channel.rx.is_empty() {
+                            api_name_set_state.set(CommsApiState::Off);
+                        }
 
-                        api_name_set_state.set(CommsApiState::Off);
                         server_block_in_event.send(ServerGameBocksIn);
                     }
                     Err(e) => {
@@ -71,7 +70,10 @@ pub fn api_receive_player_movement(
                 r
             }
             Err(e) => {
-                info!("response to setname: {}", e);
+                info!("response to moveplayer: {}", e);
+                if set_player_move_channel.rx.is_empty() {
+                    api_name_set_state.set(CommsApiState::Off);
+                }
                 e.to_string()
             }
         };

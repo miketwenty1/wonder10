@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use ulam::{calc_coord::calc_xy, value_of_xy};
 
 use crate::{
+    comms::player_move::PlayerMovementChannel,
     scenes::game_play::{NORMAL_BUTTON, PRESSED_BUTTON, SELECTED_BUTTON},
     CommsApiState, PlayerLocation,
 };
@@ -35,6 +36,7 @@ pub fn update_listen_for_player_move(
             text.sections[0].value = new_block_val.to_string();
 
             if new_block_val > 800_000 {
+                //TODO
                 *visibility = Visibility::Hidden;
             } else {
                 *visibility = Visibility::Visible;
@@ -63,7 +65,7 @@ pub fn update_listen_for_player_select(
     }
 }
 
-#[allow(clippy::type_complexity)]
+#[allow(clippy::type_complexity, clippy::too_many_arguments)]
 pub fn button_interaction_system(
     mut click_event_writer: EventWriter<BlockButtonSelected>,
     mut player_move_event_writer: EventWriter<PlayerMove>,
@@ -76,6 +78,7 @@ pub fn button_interaction_system(
     mut player_location: ResMut<PlayerLocation>,
     mut location_text_query: Query<&mut Text, With<LocationText>>,
     mut api_state: ResMut<NextState<CommsApiState>>,
+    set_player_move_channel: Res<PlayerMovementChannel>,
 ) {
     //button_entity,
     for (button_entity, interaction, mut bg_color, block_comp) in &mut interaction_query {
@@ -84,15 +87,23 @@ pub fn button_interaction_system(
                 //info!("clicked block {}", block_comp.value);
                 if selected_block.entity == button_entity {
                     selected_block.entity = Entity::PLACEHOLDER; // used to make it where no block is highlighted after a doubleclick
-                    selected_block.height = 999_999_999; // this done so no block is highlighted if you hover your mouse over it.
+                                                                 //THis is messing stuff up ... selected_block.height = 999_999_999; // this done so no block is highlighted if you hover your mouse over it.
 
-                    player_move_event_writer.send(PlayerMove {
-                        block: block_comp.height,
-                    });
-                    location_text_query.get_single_mut().unwrap().sections[1].value =
-                        block_comp.height.to_string();
-                    player_location.0 = block_comp.height;
-                    api_state.set(CommsApiState::Move);
+                    if set_player_move_channel.tx.len() < 2 {
+                        info!(
+                            "rx len {}, tx len {}",
+                            set_player_move_channel.rx.len(),
+                            set_player_move_channel.tx.len()
+                        );
+                        player_move_event_writer.send(PlayerMove {
+                            block: block_comp.height,
+                        });
+
+                        location_text_query.get_single_mut().unwrap().sections[1].value =
+                            block_comp.height.to_string();
+                        player_location.0 = block_comp.height;
+                        api_state.set(CommsApiState::Move);
+                    }
                 } else {
                     selected_block.entity = button_entity;
                     selected_block.height = block_comp.height;
@@ -139,6 +150,10 @@ pub fn button_block_details(
             Interaction::Clicked => {
                 info!("blockdetails clicked");
 
+                info!(
+                    "block height {}, selected: {}",
+                    details_block_height, selected_block.height
+                );
                 event.send(BlockDetailClick {
                     block: details_block_height,
                 });

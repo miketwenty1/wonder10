@@ -28,79 +28,85 @@ pub fn spawn_layout(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     player_username: Res<PlayerUsername>,
+    mut has_spawned: Local<bool>,
 ) {
-    let font = asset_server.load("fonts/FiraSans-Bold.ttf");
-    // Top-level grid (app frame)
-    commands
-        .spawn((
-            NodeBundle {
-                style: Style {
-                    display: Display::Grid,
-                    size: Size::all(Val::Percent(100.)),
-                    grid_template_columns: vec![
-                        GridTrack::auto(),
-                        GridTrack::min_content(),
-                        GridTrack::auto(),
-                    ],
-                    grid_template_rows: vec![
-                        GridTrack::auto(),
-                        GridTrack::min_content(),
-                        GridTrack::auto(),
-                    ],
-                    //padding: UiRect::horizontal(Val::Percent(5.0)),
+    if !(*has_spawned) {
+        *has_spawned = true;
+
+        let font = asset_server.load("fonts/FiraSans-Bold.ttf");
+        // Top-level grid (app frame)
+        commands
+            .spawn((
+                NodeBundle {
+                    z_index: ZIndex::Global(1),
+                    style: Style {
+                        display: Display::Grid,
+                        size: Size::all(Val::Percent(100.)),
+                        grid_template_columns: vec![
+                            GridTrack::auto(),
+                            GridTrack::min_content(),
+                            GridTrack::auto(),
+                        ],
+                        grid_template_rows: vec![
+                            GridTrack::auto(),
+                            GridTrack::min_content(),
+                            GridTrack::auto(),
+                        ],
+                        //padding: UiRect::horizontal(Val::Percent(5.0)),
+                        ..default()
+                    },
+
+                    background_color: BackgroundColor(Color::GRAY),
                     ..default()
                 },
-
-                background_color: BackgroundColor(Color::GRAY),
-                ..default()
-            },
-            GameLayout,
-        ))
-        .with_children(|builder| {
-            // Choose a name
-            builder
-                .spawn(NodeBundle {
-                    style: Style {
-                        display: Display::Grid,
-                        justify_items: JustifyItems::Center,
-                        grid_column: GridPlacement::start(2),
-                        //padding: UiRect::all(Val::Px(6.0)),
+                GameLayout,
+            ))
+            .with_children(|builder| {
+                // Choose a name
+                builder
+                    .spawn(NodeBundle {
+                        style: Style {
+                            display: Display::Grid,
+                            justify_items: JustifyItems::Center,
+                            grid_column: GridPlacement::start(2),
+                            //padding: UiRect::all(Val::Px(6.0)),
+                            ..default()
+                        },
                         ..default()
-                    },
-                    ..default()
-                })
-                .with_children(|builder| {
-                    spawn_location_text(builder, font.clone(), "0");
-                    spawn_username_text(builder, font.clone(), &player_username.0);
-                    spawn_balance_text(builder, font.clone(), "0");
-                });
-            builder
-                .spawn(NodeBundle {
-                    style: Style {
-                        display: Display::Grid,
-                        justify_items: JustifyItems::Center,
-                        grid_column: GridPlacement::start(2),
-                        grid_row: GridPlacement::start(2),
-                        //padding: UiRect::all(Val::Px(6.0)),
+                    })
+                    .with_children(|builder| {
+                        spawn_location_text(builder, font.clone(), "0");
+                        spawn_username_text(builder, font.clone(), &player_username.0);
+                        spawn_balance_text(builder, font.clone(), "0");
+                    });
+                builder
+                    .spawn(NodeBundle {
+                        style: Style {
+                            display: Display::Grid,
+                            justify_items: JustifyItems::Center,
+                            grid_column: GridPlacement::start(2),
+                            grid_row: GridPlacement::start(2),
+                            //padding: UiRect::all(Val::Px(6.0)),
+                            ..default()
+                        },
                         ..default()
-                    },
-                    ..default()
-                })
-                .with_children(|builder| spawn_blocks(builder, font.clone()));
-            builder
-                .spawn(NodeBundle {
-                    style: Style {
-                        display: Display::Grid,
-                        justify_items: JustifyItems::Center,
-                        grid_column: GridPlacement::start(2),
-                        grid_row: GridPlacement::start(3),
-                        //padding: UiRect::all(Val::Px(20.0)),
+                    })
+                    .with_children(|builder| spawn_blocks(builder, font.clone()));
+                builder
+                    .spawn(NodeBundle {
+                        style: Style {
+                            display: Display::Grid,
+                            justify_items: JustifyItems::Center,
+                            grid_column: GridPlacement::start(2),
+                            grid_row: GridPlacement::start(3),
+                            //padding: UiRect::all(Val::Px(20.0)),
+                            ..default()
+                        },
                         ..default()
-                    },
-                    ..default()
-                })
-                .with_children(|builder| spawn_select_block_buttons(builder, font.clone()));
-        });
+                    })
+                    .with_children(|builder| spawn_select_block_buttons(builder, font.clone()));
+            });
+    }
 }
 
 fn spawn_location_text(builder: &mut ChildBuilder, font: Handle<Font>, text: &str) {

@@ -1,7 +1,7 @@
 use crate::{
     comms::BlockchainBlockDataFromServer,
-    scenes::game_play::events::{BlockDetailClick, ServerBlockchainBlocksIn},
-    CommsApiState, ServerURL,
+    scenes::game_play::events::{BlockDetailClick, ServerBlockchainBlockIn},
+    CommsApiState, GameState, ServerURL,
 };
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
@@ -47,7 +47,8 @@ pub fn api_receive_blockchain_block(
     api_timer: Res<ApiPollingTimer>,
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
     mut current_block_server_data: ResMut<BlockchainBlockDataFromServer>,
-    mut server_block_in_event: EventWriter<ServerBlockchainBlocksIn>,
+    mut server_block_in_event: EventWriter<ServerBlockchainBlockIn>,
+    mut game_state: ResMut<NextState<GameState>>,
 ) {
     if api_timer.timer.finished() {
         let api_res = channel.rx.try_recv();
@@ -56,14 +57,15 @@ pub fn api_receive_blockchain_block(
         match api_res {
             Ok(r) => {
                 info!("response to requesting block details: {}", r);
-                let r_invoice_result = serde_json::from_str::<BlockchainBlockDataFromServer>(&r);
-                match r_invoice_result {
+                let r_result = serde_json::from_str::<BlockchainBlockDataFromServer>(&r);
+                match r_result {
                     Ok(server_block_data) => {
                         info!("{:?}", server_block_data);
                         *current_block_server_data = server_block_data;
 
                         api_name_set_state.set(CommsApiState::Off);
-                        server_block_in_event.send(ServerBlockchainBlocksIn);
+                        server_block_in_event.send(ServerBlockchainBlockIn);
+                        game_state.set(GameState::BlockDetailsOverlay);
                     }
                     Err(e) => {
                         info!("requesting block details fail: {}", e);

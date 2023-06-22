@@ -1,5 +1,8 @@
 //mod components;
+mod components;
+mod editable_text_box;
 mod layout;
+mod rows;
 pub mod styles;
 pub mod systems;
 
@@ -8,12 +11,10 @@ use crate::{despawn_screen, GameState};
 use bevy::prelude::*;
 
 use self::{
+    components::DetailsMenu,
     layout::spawn_block_details_menu,
     systems::{interact_with_back_button, interact_with_buy_button},
 };
-
-#[derive(Component, Debug)]
-pub struct BlockDetailsMenu;
 
 pub struct BlockDetailsMenuPlugin;
 impl Plugin for BlockDetailsMenuPlugin {
@@ -26,15 +27,16 @@ impl Plugin for BlockDetailsMenuPlugin {
             )
             .add_systems(
                 Update,
-                interact_with_buy_button.run_if(in_state(GameState::BlockDetailsOverlay)),
+                (interact_with_buy_button, interact_with_back_button)
+                    .run_if(in_state(GameState::BlockDetailsOverlay)),
             )
-            .add_systems(
-                Update,
-                interact_with_back_button.run_if(in_state(GameState::BlockDetailsOverlay)),
-            )
+            // .add_systems(
+            //     Update,
+            //     interact_with_back_button.run_if(in_state(GameState::BlockDetailsOverlay)),
+            // )
             .add_systems(
                 OnExit(GameState::BlockDetailsOverlay),
-                despawn_screen::<BlockDetailsMenu>,
+                despawn_screen::<DetailsMenu>,
             );
     }
 }

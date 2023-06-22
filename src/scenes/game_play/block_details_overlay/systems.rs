@@ -1,27 +1,13 @@
 use crate::{
-    comms::{BlockchainBlockDataFromServer, GameBlock, GameBlockDataFromServer},
-    scenes::game_play::{
-        block_details_overlay::{
-            styles::{
-                get_bd_menu_container_style, get_bd_menu_style, get_button_style,
-                get_button_text_style, get_title_text_style, BACKGROUND_COLOR,
-            },
-            BlockDetailsMenu,
-        },
-        blocks_grid::SelectedBlock,
-        events::{BuyBlockRequest, PlayerMove, ServerBlockchainBlockIn},
-    },
-    CommsApiState, DisplayInvoice, GameState, PlayerLocation, PlayerUsername,
+    scenes::game_play::{blocks_grid::SelectedBlock, events::BuyBlockRequest},
+    CommsApiState, DisplayInvoice, GameState, PlayerUsername,
 };
 use bevy::prelude::*;
 
-use super::styles::{HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON};
-
-#[derive(Component)]
-pub struct BuyBdBlockButton;
-
-#[derive(Component)]
-pub struct BackBdButton;
+use super::{
+    components::{BackBdButton, BuyBdBlockButton},
+    styles::{BG_BUY_BTN_COLOR, HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON},
+};
 
 #[allow(clippy::type_complexity)]
 pub fn interact_with_buy_button(
@@ -35,7 +21,6 @@ pub fn interact_with_buy_button(
     selected_block: ResMut<SelectedBlock>,
     mut player_username: ResMut<PlayerUsername>,
 ) {
-    info!("is this triggering?");
     for (interaction, mut color) in button_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
@@ -54,7 +39,7 @@ pub fn interact_with_buy_button(
                 *color = HOVERED_BUTTON.into();
             }
             Interaction::None => {
-                *color = NORMAL_BUTTON.into();
+                *color = BG_BUY_BTN_COLOR.into();
             }
         }
     }
@@ -73,7 +58,6 @@ pub fn interact_with_back_button(
             Interaction::Clicked => {
                 *color = PRESSED_BUTTON.into();
                 game_state.set(GameState::Game);
-                info!("clicked back");
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();

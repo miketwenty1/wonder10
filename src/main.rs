@@ -14,6 +14,7 @@ use crate::{
 mod audio;
 mod comms;
 mod consolelog;
+pub mod core_systems;
 mod keyboard;
 mod scenes;
 

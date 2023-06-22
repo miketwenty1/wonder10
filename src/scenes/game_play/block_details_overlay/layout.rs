@@ -2,26 +2,26 @@ use crate::{
     comms::{BlockchainBlockDataFromServer, GameBlock, GameBlockDataFromServer},
     scenes::game_play::{
         block_details_overlay::{
+            components::{BackBdButton, BuyBdBlockButton},
             styles::{
                 get_bd_menu_container_style, get_bd_menu_style, get_button_style,
                 get_button_text_style, get_title_text_style, BACKGROUND_COLOR,
             },
-            BlockDetailsMenu,
         },
-        blocks_grid::SelectedBlock,
-        events::{BuyBlockRequest, PlayerMove, ServerBlockchainBlockIn},
+        events::{PlayerMove, ServerBlockchainBlockIn},
     },
-    CommsApiState, DisplayInvoice, GameState, PlayerLocation, PlayerUsername,
+    CommsApiState, GameState, PlayerLocation, PlayerUsername,
 };
 use bevy::prelude::*;
 
-use super::styles::{HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON};
-
-#[derive(Component)]
-pub struct BuyBdBlockButton;
-
-#[derive(Component)]
-pub struct BackBdButton;
+use super::{
+    components::DetailsMenu,
+    rows::{
+        spawn_blockchain_data_row, spawn_detail_buttons_row, spawn_game_block_data_row,
+        spawn_header_row, spawn_input_header_row, spawn_input_values_area_row,
+    },
+    styles::NORMAL_BUTTON,
+};
 
 #[allow(clippy::too_many_arguments)]
 pub fn spawn_block_details_menu(
@@ -34,6 +34,7 @@ pub fn spawn_block_details_menu(
     player_location: ResMut<PlayerLocation>,
     mut game_state: ResMut<NextState<GameState>>,
     mut api_state: ResMut<NextState<CommsApiState>>,
+    player_username: Res<PlayerUsername>,
 ) {
     for _event in server_block_in.iter() {
         // get height
@@ -53,37 +54,15 @@ pub fn spawn_block_details_menu(
                 } else {
                     s.last_payment_amount * 2
                 };
-                // spawn_menu(
-                //     &mut commands,
-                //     height,
-                //     &asset_server,
-                //     &current_blockchain_server_data,
-                //     s.clone(),
-                //     buy_amount,
-                // );
-                commands
-                    .spawn((
-                        ButtonBundle {
-                            style: get_button_style(),
-                            background_color: NORMAL_BUTTON.into(),
-                            ..default()
-                        },
-                        BackBdButton,
-                    ))
-                    .with_children(|parent| {
-                        parent.spawn(TextBundle {
-                            style: Style { ..default() },
-                            text: Text {
-                                sections: vec![TextSection::new(
-                                    "Back",
-                                    get_button_text_style(&asset_server),
-                                )],
-                                alignment: TextAlignment::Center,
-                                ..default()
-                            },
-                            ..default()
-                        });
-                    });
+                spawn_menu(
+                    &mut commands,
+                    height,
+                    &asset_server,
+                    &current_blockchain_server_data,
+                    s.clone(),
+                    buy_amount,
+                    player_username.0.to_string(),
+                );
             }
 
             None => {
@@ -105,112 +84,26 @@ fn spawn_menu(
     current_blockchain_server_data: &Res<BlockchainBlockDataFromServer>,
     game_block: GameBlock,
     buy_amount: u32,
+    player_username: String,
 ) {
-    let ent = commands
+    let blockchain_data = current_blockchain_server_data.blocks.get(height).unwrap();
+    let font = asset_server.load("fonts/FiraSans-Bold.ttf");
+    commands
         .spawn((
             NodeBundle {
                 style: get_bd_menu_style(),
                 z_index: ZIndex::Global(2),
+                background_color: BACKGROUND_COLOR.into(),
                 ..default()
             },
-            BlockDetailsMenu,
+            DetailsMenu,
         ))
-        .with_children(|parent| {
-            //let innerblock_map = block_map;
-            parent
-                .spawn(NodeBundle {
-                    style: get_bd_menu_container_style(),
-                    background_color: BACKGROUND_COLOR.into(),
-                    ..default()
-                })
-                .with_children(|parent| {
-                    // Title
-                    parent.spawn(TextBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                format!("BLOCK HEIGHT {}", height),
-                                get_title_text_style(asset_server, 64.0),
-                            )],
-                            alignment: TextAlignment::Center,
-                            ..default()
-                        },
-                        ..default()
-                    });
-
-                    parent.spawn(TextBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                format!("{:#?}", current_blockchain_server_data.blocks),
-                                get_title_text_style(asset_server, 16.0),
-                            )],
-
-                            alignment: TextAlignment::Left,
-                            ..default()
-                        },
-                        ..default()
-                    });
-                    parent.spawn(TextBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                format!("{:#?}", game_block),
-                                get_title_text_style(asset_server, 16.0),
-                            )],
-
-                            alignment: TextAlignment::Left,
-                            ..default()
-                        },
-                        ..default()
-                    });
-                    // Buy Button
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: get_button_style(),
-                                background_color: NORMAL_BUTTON.into(),
-                                ..default()
-                            },
-                            BuyBdBlockButton,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(TextBundle {
-                                style: Style { ..default() },
-                                text: Text {
-                                    sections: vec![TextSection::new(
-                                        format!("Buy Block for {} sats", buy_amount),
-                                        get_button_text_style(asset_server),
-                                    )],
-                                    alignment: TextAlignment::Center,
-                                    ..default()
-                                },
-                                ..default()
-                            });
-                        });
-                    // Back Button
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: get_button_style(),
-                                background_color: NORMAL_BUTTON.into(),
-                                ..default()
-                            },
-                            BackBdButton,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(TextBundle {
-                                style: Style { ..default() },
-                                text: Text {
-                                    sections: vec![TextSection::new(
-                                        "Back",
-                                        get_button_text_style(asset_server),
-                                    )],
-                                    alignment: TextAlignment::Center,
-                                    ..default()
-                                },
-                                ..default()
-                            });
-                        });
-                });
-        })
-        .id();
-    info!("entity {:#?}", ent);
+        .with_children(|builder| {
+            spawn_header_row(builder, font.clone(), height);
+            spawn_blockchain_data_row(builder, font.clone(), blockchain_data);
+            spawn_game_block_data_row(builder, font.clone(), game_block);
+            spawn_input_header_row(builder, font.clone());
+            spawn_input_values_area_row(builder, font.clone(), player_username, None);
+            spawn_detail_buttons_row(builder, font.clone(), buy_amount);
+        });
 }

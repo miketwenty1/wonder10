@@ -3,6 +3,9 @@ pub const BACKGROUND_COLOR: Color = Color::rgba(0.05, 0.05, 0.05, 0.995);
 pub const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 pub const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 pub const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
+pub const INPUT_COLOR: Color = Color::rgb(0.1, 0.6, 0.01);
+pub const BG_INPUT_COLOR: Color = Color::rgb(0.85, 0.85, 0.85);
+pub const BG_BUY_BTN_COLOR: Color = Color::rgb(0.05, 0.25, 0.05);
 
 pub fn get_title_text_style(asset_server: &Res<AssetServer>, size: f32) -> TextStyle {
     TextStyle {
@@ -12,9 +15,9 @@ pub fn get_title_text_style(asset_server: &Res<AssetServer>, size: f32) -> TextS
     }
 }
 
-pub fn get_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
+pub fn get_button_text_style(font: Handle<Font>) -> TextStyle {
     TextStyle {
-        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+        font,
         font_size: 32.0,
         color: Color::rgb(1.0, 1.0, 1.0),
     }
@@ -26,6 +29,7 @@ pub fn get_bd_menu_style() -> Style {
         display: Display::Flex,                // Hidden by Default
         justify_content: JustifyContent::Center,
         align_items: AlignItems::Center,
+        flex_direction: FlexDirection::Column,
         size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
         ..Style::DEFAULT
     }

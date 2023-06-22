@@ -11,3 +11,9 @@ pub struct BackBdButton;
 
 #[derive(Component)]
 pub struct LightningAddressInput;
+
+#[derive(Component)]
+pub struct ColorInput;
+
+#[derive(Component)]
+pub struct MessageInput;

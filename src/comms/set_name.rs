@@ -1,5 +1,6 @@
 use crate::{
-    scenes::game_play::events::PlayerMove, CommsApiState, GameState, PlayerUsername, ServerURL,
+    keyboard::resources::KeyboardData, scenes::game_play::events::PlayerMove, CommsApiState,
+    GameState, KeyboardState, PlayerUsername, ServerURL,
 };
 use async_channel::{Receiver, Sender};
 use bevy::{prelude::*, tasks::IoTaskPool};
@@ -42,6 +43,7 @@ pub fn api_send_username(
     });
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn api_receive_username(
     set_username_channel: ResMut<SetUsernameChannel>,
     api_timer: Res<ApiPollingTimer>,
@@ -49,6 +51,8 @@ pub fn api_receive_username(
     mut player_username: ResMut<PlayerUsername>,
     mut game_state: ResMut<NextState<GameState>>,
     mut player_move_event_writer: EventWriter<PlayerMove>,
+    mut keyboard_state: ResMut<NextState<KeyboardState>>,
+    mut keyboard_text: ResMut<KeyboardData>,
 ) {
     if api_timer.timer.finished() {
         info!("timer finished");
@@ -63,8 +67,10 @@ pub fn api_receive_username(
                         info!("{:?}", o);
                         player_username.0 = o.name;
                         game_state.set(GameState::Game);
+                        keyboard_state.set(KeyboardState::Off);
                         player_move_event_writer.send(PlayerMove { block: 0 }); //IF YOU NEED TO SET A CUSTOM START
                         api_name_set_state.set(CommsApiState::Move);
+                        keyboard_text.0 = "".to_string();
                     }
                     Err(e) => {
                         info!("no new invoice data to get: {}", e);

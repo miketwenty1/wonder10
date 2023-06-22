@@ -10,15 +10,16 @@ use crate::{
         },
         events::{PlayerMove, ServerBlockchainBlockIn},
     },
-    CommsApiState, GameState, PlayerLocation, PlayerUsername,
+    CommsApiState, GameState, KeyboardState, PlayerLocation, PlayerUsername,
 };
-use bevy::prelude::*;
+use bevy::{input::keyboard, prelude::*};
 
 use super::{
     components::DetailsMenu,
     rows::{
-        spawn_blockchain_data_row, spawn_detail_buttons_row, spawn_game_block_data_row,
-        spawn_header_row, spawn_input_header_row, spawn_input_values_area_row,
+        keyboard_row, spawn_blockchain_data_row, spawn_detail_buttons_row,
+        spawn_game_block_data_row, spawn_header_row, spawn_input_header_row,
+        spawn_input_values_area_row,
     },
     styles::NORMAL_BUTTON,
 };
@@ -35,6 +36,7 @@ pub fn spawn_block_details_menu(
     mut game_state: ResMut<NextState<GameState>>,
     mut api_state: ResMut<NextState<CommsApiState>>,
     player_username: Res<PlayerUsername>,
+    mut keyboard_state: ResMut<NextState<KeyboardState>>,
 ) {
     for _event in server_block_in.iter() {
         // get height
@@ -63,6 +65,7 @@ pub fn spawn_block_details_menu(
                     buy_amount,
                     player_username.0.to_string(),
                 );
+                keyboard_state.set(KeyboardState::On);
             }
 
             None => {
@@ -75,6 +78,14 @@ pub fn spawn_block_details_menu(
             }
         }
     }
+    // let a = keyboard_state.0;
+    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
+    // keyboard_state.set(KeyboardState::Off);
+    // let a = keyboard_state.0;
+    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
+    // keyboard_state.set(KeyboardState::On);
+    // let a = keyboard_state.0;
+    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
 }
 
 fn spawn_menu(
@@ -105,5 +116,6 @@ fn spawn_menu(
             spawn_input_header_row(builder, font.clone());
             spawn_input_values_area_row(builder, font.clone(), player_username, None);
             spawn_detail_buttons_row(builder, font.clone(), buy_amount);
+            keyboard_row(builder);
         });
 }

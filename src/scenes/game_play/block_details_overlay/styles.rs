@@ -6,6 +6,7 @@ pub const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 pub const INPUT_COLOR: Color = Color::rgb(0.1, 0.6, 0.01);
 pub const BG_INPUT_COLOR: Color = Color::rgb(0.85, 0.85, 0.85);
 pub const BG_BUY_BTN_COLOR: Color = Color::rgb(0.05, 0.25, 0.05);
+pub const BG_BUY_BTN_HOVER_COLOR: Color = Color::rgb(0.1, 0.35, 0.1);
 
 pub fn get_title_text_style(asset_server: &Res<AssetServer>, size: f32) -> TextStyle {
     TextStyle {

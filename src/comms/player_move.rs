@@ -55,7 +55,7 @@ pub fn api_receive_player_movement(
                 let r_invoice_result = serde_json::from_str::<GameBlockDataFromServer>(&r);
                 match r_invoice_result {
                     Ok(server_block_data) => {
-                        info!("{:?}", server_block_data);
+                        //info!("{:?}", server_block_data);
                         *current_block_server_data = server_block_data;
                         if set_player_move_channel.rx.is_empty() {
                             api_name_set_state.set(CommsApiState::Off);

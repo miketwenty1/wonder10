@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use crate::{
     audio::setup_music,
     comms::CommsPlugin,
-    keyboard::CapitalizeToggle,
+    keyboard::{resources::KeyboardData, KeyboardPlugin},
     scenes::{
         game_play::GamePlayPlugin, instructions::InstructionsPlugin,
         player_select::PlayerSelectPlugin,
@@ -51,6 +51,13 @@ pub enum MusicState {
     Lobby,
 }
 
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
+pub enum KeyboardState {
+    #[default]
+    Off,
+    On,
+}
+
 #[derive(Resource, Clone)]
 pub struct PlayerUsername(String);
 
@@ -81,13 +88,15 @@ pub fn game(username: String, server_url: String) {
         .insert_resource(PlayerUsername(username))
         .insert_resource(PlayerLocation(69420))
         .insert_resource(ServerURL(server_url))
-        .insert_resource(CapitalizeToggle(false))
+        .insert_resource(KeyboardData("".to_string()))
         .add_state::<GameState>()
         .add_state::<DisplayInvoice>()
         .add_state::<CommsApiState>()
         .add_state::<MusicState>()
+        .add_state::<KeyboardState>()
         .add_systems(Startup, setup)
         .add_systems(Startup, comms::setup::setup_comm)
+        .add_plugin(KeyboardPlugin)
         .add_plugin(InstructionsPlugin)
         .add_plugin(PlayerSelectPlugin)
         .add_plugin(GamePlayPlugin)

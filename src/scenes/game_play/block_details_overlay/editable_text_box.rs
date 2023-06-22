@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use super::{
-    components::LightningAddressInput,
+    components::{ColorInput, LightningAddressInput, MessageInput},
     styles::{BG_INPUT_COLOR, INPUT_COLOR},
 };
 
@@ -54,7 +54,7 @@ pub fn spawn_color_editable(builder: &mut ChildBuilder, font: Handle<Font>) {
                         color: INPUT_COLOR,
                     },
                 ),
-                LightningAddressInput,
+                ColorInput,
             ));
         });
 }
@@ -81,7 +81,7 @@ pub fn spawn_message_editable(builder: &mut ChildBuilder, font: Handle<Font>) {
                         color: INPUT_COLOR,
                     },
                 ),
-                LightningAddressInput,
+                MessageInput,
             ));
         });
 }

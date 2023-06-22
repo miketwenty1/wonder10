@@ -2,8 +2,11 @@ use bevy::prelude::*;
 
 use crate::{
     comms::set_name::{api_send_username, SetUsernameChannel},
-    keyboard::{setup_keyboard, CapitalizeToggle, KeyBoardButton},
-    CommsApiState, PlayerUsername, ServerURL,
+    keyboard::{
+        components::{KeyBoardButton, KeyboardNode},
+        resources::KeyboardData,
+    },
+    CommsApiState, KeyboardState, PlayerUsername, ServerURL,
 };
 
 use super::super::spawn_nested_text_bundle;
@@ -11,9 +14,9 @@ use super::super::spawn_nested_text_bundle;
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
-pub const PLAYERNAME_MAX_LENGTH: usize = 21;
+// pub const PLAYERNAME_MAX_LENGTH: usize = 21;
 
-const ACCEPTABLE_CHARS: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ";
+// const ACCEPTABLE_CHARS: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ";
 
 #[derive(Component, Debug)]
 pub struct PlayerSelectText;
@@ -25,6 +28,8 @@ pub fn spawn_layout(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     player_name: Res<PlayerUsername>,
+    mut keyboard_data: ResMut<KeyboardData>,
+    mut keyboard_state: ResMut<NextState<KeyboardState>>,
 ) {
     let font = asset_server.load("fonts/FiraSans-Bold.ttf");
     // Top-level grid (app frame)
@@ -83,11 +88,12 @@ pub fn spawn_layout(
                     ..default()
                 })
                 .with_children(|builder| {
+                    keyboard_data.0 = player_name.0.to_string();
                     spawn_player_text_bundle(builder, font.clone(), &player_name.0.to_string());
                 });
             // keyboard row
-            builder
-                .spawn(NodeBundle {
+            builder.spawn((
+                NodeBundle {
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
@@ -95,11 +101,9 @@ pub fn spawn_layout(
                         ..default()
                     },
                     ..default()
-                })
-                .with_children(|builder| {
-                    setup_keyboard(builder, font.clone());
-                });
-            // start button
+                },
+                KeyboardNode,
+            ));
             builder
                 .spawn(NodeBundle {
                     style: Style {
@@ -114,6 +118,7 @@ pub fn spawn_layout(
                     start_button(builder, font.clone());
                 });
         });
+    keyboard_state.set(KeyboardState::On);
 }
 
 fn spawn_player_text_bundle(builder: &mut ChildBuilder, font: Handle<Font>, text: &str) {
@@ -205,85 +210,11 @@ pub fn button_system(
 
 pub fn username_text_system(
     mut username_text: Query<&mut Text, With<PlayerSelectText>>,
-    username_res: Res<PlayerUsername>,
+    mut username_res: ResMut<PlayerUsername>,
+    keyboard_res: Res<KeyboardData>,
 ) {
     for mut user_string in username_text.iter_mut() {
-        user_string.sections[0].value = username_res.0.to_string();
-    }
-}
-
-#[allow(clippy::type_complexity)]
-pub fn player_vkeyboard_system(
-    mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor, &KeyBoardButton),
-        (Changed<Interaction>, With<Button>, With<KeyBoardButton>),
-    >,
-    mut player_text: ResMut<PlayerUsername>,
-    mut c_toggle: ResMut<CapitalizeToggle>,
-) {
-    for (interaction, mut color, keyboard_button) in &mut interaction_query {
-        let k = keyboard_button.0;
-        match *interaction {
-            Interaction::Clicked => {
-                match k {
-                    '<' => {
-                        player_text.0.pop();
-                    }
-                    '^' => {
-                        c_toggle.0 = !c_toggle.0;
-                        debug!("capitalize is now set to: {}", c_toggle.0);
-                    }
-                    k if ACCEPTABLE_CHARS.contains(k)
-                        && player_text.0.len() < PLAYERNAME_MAX_LENGTH =>
-                    {
-                        if c_toggle.0 {
-                            player_text.0.push(k.to_ascii_uppercase());
-                        } else {
-                            player_text.0.push(k);
-                        }
-                    }
-                    _ => {
-                        info!("no likey this character sorry")
-                    }
-                }
-
-                debug!("new name {:?}", player_text.0);
-
-                *color = PRESSED_BUTTON.into();
-            }
-            Interaction::Hovered => {
-                //text.sections[0].value = "Ready?".to_string();
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                //text.sections[0].value = "Start".to_string();
-                *color = NORMAL_BUTTON.into();
-            }
-        }
-    }
-}
-
-#[allow(clippy::type_complexity)]
-pub fn player_pkeyboard_system(
-    mut char_evr: EventReader<ReceivedCharacter>,
-    keys: Res<Input<KeyCode>>,
-    mut player_text: ResMut<PlayerUsername>,
-) {
-    if keys.just_pressed(KeyCode::Back) {
-        player_text.0.pop();
-    }
-
-    for ev in char_evr.iter() {
-        let k = ev.char;
-
-        if ACCEPTABLE_CHARS.contains(k) && player_text.0.len() < PLAYERNAME_MAX_LENGTH {
-            player_text.0.push(k);
-        } else {
-            info!("no likey this character sorry")
-        }
-
-        debug!("new name {:?}", player_text.0);
-
-        //*color = PRESSED_BUTTON.into();
+        user_string.sections[0].value = keyboard_res.0.to_string();
+        username_res.0 = user_string.sections[0].value.to_string();
     }
 }

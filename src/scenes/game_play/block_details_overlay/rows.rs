@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::{
     comms::{BlockchainBlock, GameBlock},
     core_systems::spawn_text,
+    keyboard::components::KeyboardNode,
 };
 
 use super::{
@@ -31,7 +32,7 @@ pub fn spawn_header_row(builder: &mut ChildBuilder, font: Handle<Font>, height: 
             spawn_text(
                 builder,
                 font,
-                64.0,
+                32.0,
                 Color::WHITE,
                 format!("BLOCK HEIGHT {}", height).as_str(),
             );
@@ -103,7 +104,7 @@ pub fn spawn_game_block_data_row(
                             inner,
                             font.clone(),
                             20.0,
-                            Color::GRAY,
+                            Color::ORANGE,
                             format!("{} : {}", display_key, val_text).as_str(),
                         );
                     }
@@ -304,6 +305,20 @@ pub fn spawn_detail_buttons_row(builder: &mut ChildBuilder, font: Handle<Font>, 
                     });
                 });
         });
+}
+
+pub fn keyboard_row(builder: &mut ChildBuilder) {
+    builder.spawn((
+        NodeBundle {
+            style: Style {
+                flex_direction: FlexDirection::Row,
+                margin: UiRect::top(MARGIN),
+                ..Default::default()
+            },
+            ..Default::default()
+        },
+        KeyboardNode,
+    ));
 }
 
 fn remove_quotes(input: &str) -> &str {

@@ -52,7 +52,6 @@ pub fn api_receive_username(
     mut game_state: ResMut<NextState<GameState>>,
     mut player_move_event_writer: EventWriter<PlayerMove>,
     mut keyboard_state: ResMut<NextState<KeyboardState>>,
-    mut keyboard_text: ResMut<KeyboardData>,
 ) {
     if api_timer.timer.finished() {
         info!("timer finished");
@@ -61,8 +60,8 @@ pub fn api_receive_username(
         match api_res {
             Ok(r) => {
                 info!("response to setname: {}", r);
-                let r_invoice_result = serde_json::from_str::<RespUsernameSet>(&r);
-                match r_invoice_result {
+                let r_username_result = serde_json::from_str::<RespUsernameSet>(&r);
+                match r_username_result {
                     Ok(o) => {
                         info!("{:?}", o);
                         player_username.0 = o.name;
@@ -70,7 +69,6 @@ pub fn api_receive_username(
                         keyboard_state.set(KeyboardState::Off);
                         player_move_event_writer.send(PlayerMove { block: 0 }); //IF YOU NEED TO SET A CUSTOM START
                         api_name_set_state.set(CommsApiState::Move);
-                        keyboard_text.0 = "".to_string();
                     }
                     Err(e) => {
                         info!("no new invoice data to get: {}", e);

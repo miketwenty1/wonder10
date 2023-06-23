@@ -1,5 +1,6 @@
 use crate::{
     comms::{BlockchainBlockDataFromServer, GameBlock, GameBlockDataFromServer},
+    keyboard::resources::KeyboardData,
     scenes::game_play::{
         block_details_overlay::{
             components::{BackBdButton, BuyBdBlockButton},
@@ -37,8 +38,10 @@ pub fn spawn_block_details_menu(
     mut api_state: ResMut<NextState<CommsApiState>>,
     player_username: Res<PlayerUsername>,
     mut keyboard_state: ResMut<NextState<KeyboardState>>,
+    mut keyboard_text: ResMut<KeyboardData>,
 ) {
     for _event in server_block_in.iter() {
+        keyboard_text.0 = "".to_string();
         // get height
         let mut height = "0";
         for k in current_blockchain_server_data.blocks.keys() {
@@ -78,14 +81,6 @@ pub fn spawn_block_details_menu(
             }
         }
     }
-    // let a = keyboard_state.0;
-    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
-    // keyboard_state.set(KeyboardState::Off);
-    // let a = keyboard_state.0;
-    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
-    // keyboard_state.set(KeyboardState::On);
-    // let a = keyboard_state.0;
-    // info!("keyboard_state: {:?}", a); //keyboard_state.set(KeyboardState::On);
 }
 
 fn spawn_menu(

@@ -1,6 +1,6 @@
 use crate::{
     scenes::game_play::{blocks_grid::SelectedBlock, events::BuyBlockRequest},
-    CommsApiState, DisplayInvoice, GameState, PlayerUsername,
+    CommsApiState, DisplayInvoice, GameState, KeyboardState, PlayerUsername,
 };
 use bevy::prelude::*;
 
@@ -54,12 +54,14 @@ pub fn interact_with_back_button(
         (Changed<Interaction>, With<BackBdButton>),
     >,
     mut game_state: ResMut<NextState<GameState>>,
+    mut keyboard_state: ResMut<NextState<KeyboardState>>,
 ) {
     for (interaction, mut color) in button_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
                 *color = PRESSED_BUTTON.into();
                 game_state.set(GameState::Game);
+                keyboard_state.set(KeyboardState::Off);
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();

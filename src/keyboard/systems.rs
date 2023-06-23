@@ -8,8 +8,8 @@ use super::{
     styles::{HOVERED_BUTTON, NORMAL_BUTTON},
 };
 
-const ACCEPTABLE_CHARS: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ";
-const MAX_INPUT_LENGTH: usize = 21;
+const ACCEPTABLE_CHARS: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 @.";
+const MAX_INPUT_LENGTH: usize = 100;
 #[allow(clippy::type_complexity)]
 pub fn physical_keyboard_system(
     mut char_evr: EventReader<ReceivedCharacter>,

@@ -20,16 +20,16 @@ pub fn setup_keyboard(
     for ent in placement_query.iter() {
         // let mut parent_node = commands.entity(ent);
         // parent_node.commands().spawn(bundle)
-        let key_chars = ["1234567890<", "qwertyuiop", "^asdfghjkl", "zxcvbnm "];
+        let key_chars = ["@1234567890<", "qwertyuiop", "^asdfghjkl", "zxcvbnm ."];
         let font = asset_server.load("fonts/FiraSans-Bold.ttf");
         let mut keyboardcmds = commands.spawn((
             NodeBundle {
                 style: Style {
                     display: Display::Grid,
-                    size: Size::width(Val::Percent(90.0)),
+                    size: Size::width(Val::Percent(99.0)),
                     grid_template_columns: vec![GridTrack::flex(1.0)],
                     align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
+                    justify_content: JustifyContent::SpaceEvenly,
                     gap: Size {
                         width: Val::Px(0.0),
                         height: Val::Px(0.0),
@@ -113,17 +113,17 @@ fn spawn_keyboard_row(builder: &mut ChildBuilder, font: Handle<Font>, row_keys: 
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::all(Val::Percent(80.)),
+                size: Size::all(Val::Percent(99.)),
                 flex_direction: FlexDirection::Row,
 
                 align_items: AlignItems::Center,
                 padding: UiRect {
-                    left: Val::Percent(5.),
-                    right: Val::Percent(5.),
+                    left: Val::Percent(1.),
+                    right: Val::Percent(1.),
                     top: Val::Percent(0.1),
                     bottom: Val::Percent(0.1),
                 },
-                justify_content: JustifyContent::Center,
+                justify_content: JustifyContent::SpaceEvenly,
                 // gap: Size {
                 //     width: Val::Px(0.0),
                 //     height: Val::Px(0.0),

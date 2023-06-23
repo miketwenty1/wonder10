@@ -7,7 +7,7 @@ use crate::{
 };
 
 use super::{
-    components::{BackBdButton, BuyBdBlockButton},
+    components::{BackBdButton, BlockchainMenuNode, BuyBdBlockButton},
     editable_text_box::{spawn_color_editable, spawn_ln_editable, spawn_message_editable},
     styles::{
         get_button_style, get_button_text_style, BG_BUY_BTN_COLOR, INPUT_COLOR, NORMAL_BUTTON,
@@ -22,7 +22,12 @@ pub fn spawn_header_row(builder: &mut ChildBuilder, font: Handle<Font>, height: 
     builder
         .spawn(NodeBundle {
             style: Style {
+                size: Size::width(Val::Percent(100.0)),
                 flex_direction: FlexDirection::Row,
+                align_content: AlignContent::Center,
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 margin: UiRect::top(MARGIN),
                 ..Default::default()
             },
@@ -45,19 +50,26 @@ pub fn spawn_blockchain_data_row(
     blockchain_data: &BlockchainBlock,
 ) {
     builder
-        .spawn(NodeBundle {
-            style: Style {
-                flex_direction: FlexDirection::Row,
-                margin: UiRect::top(MARGIN),
+        .spawn((
+            NodeBundle {
+                style: Style {
+                    size: Size::width(Val::Percent(100.0)),
+                    flex_direction: FlexDirection::Row,
+                    align_content: AlignContent::Center,
+                    align_items: AlignItems::Center,
+                    justify_content: JustifyContent::Center,
+                    margin: UiRect::top(MARGIN),
+                    ..Default::default()
+                },
                 ..Default::default()
             },
-            ..Default::default()
-        })
+            BlockchainMenuNode,
+        ))
         .with_children(|builder| {
             spawn_text(
                 builder,
                 font,
-                16.0,
+                10.0,
                 Color::WHITE,
                 format!("{:#?}", blockchain_data).as_str(),
             );
@@ -71,7 +83,12 @@ pub fn spawn_game_block_data_row(
     builder
         .spawn(NodeBundle {
             style: Style {
+                size: Size::width(Val::Percent(100.0)),
                 flex_direction: FlexDirection::Row,
+                align_content: AlignContent::Center,
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 ..Default::default()
             },
             ..Default::default()
@@ -116,7 +133,12 @@ pub fn spawn_input_header_row(builder: &mut ChildBuilder, font: Handle<Font>) {
     builder
         .spawn(NodeBundle {
             style: Style {
+                size: Size::width(Val::Percent(100.0)),
                 flex_direction: FlexDirection::Row,
+                align_content: AlignContent::Center,
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 margin: UiRect::top(MARGIN),
                 ..Default::default()
             },
@@ -136,7 +158,12 @@ pub fn spawn_input_values_area_row(
     builder
         .spawn(NodeBundle {
             style: Style {
+                size: Size::width(Val::Percent(100.0)),
                 flex_direction: FlexDirection::Row,
+                align_content: AlignContent::Center,
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 ..Default::default()
             },
             ..Default::default()
@@ -250,10 +277,11 @@ pub fn spawn_detail_buttons_row(builder: &mut ChildBuilder, font: Handle<Font>, 
     builder
         .spawn(NodeBundle {
             style: Style {
-                //flex_direction: FlexDirection::Row,
+                size: Size::width(Val::Percent(100.0)),
+                flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
-                // align_items: AlignItems::Center,
-                // justify_content: JustifyContent::Center,
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 margin: UiRect::all(Val::Px(10.0)),
                 ..Default::default()
             },
@@ -311,8 +339,11 @@ pub fn keyboard_row(builder: &mut ChildBuilder) {
     builder.spawn((
         NodeBundle {
             style: Style {
+                size: Size::width(Val::Percent(100.0)),
                 flex_direction: FlexDirection::Row,
                 margin: UiRect::top(MARGIN),
+                justify_content: JustifyContent::SpaceEvenly,
+                justify_items: JustifyItems::Stretch,
                 ..Default::default()
             },
             ..Default::default()

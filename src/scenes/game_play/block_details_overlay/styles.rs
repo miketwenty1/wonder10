@@ -26,6 +26,9 @@ pub fn get_button_text_style(font: Handle<Font>) -> TextStyle {
 
 pub fn get_bd_menu_style() -> Style {
     Style {
+        //size: Size::width(Val::Percent(100.0)),
+        //flex_direction: FlexDirection::Row,
+        align_content: AlignContent::Center,
         position_type: PositionType::Absolute, // Needed to display separately from HUD.
         display: Display::Flex,                // Hidden by Default
         justify_content: JustifyContent::Center,
@@ -53,6 +56,15 @@ pub fn get_button_style() -> Style {
         size: Size::new(Val::Px(200.0), Val::Px(80.0)),
         justify_content: JustifyContent::Center,
         align_items: AlignItems::Center,
+        ..Style::DEFAULT
+    }
+}
+
+pub fn get_editable_button_style() -> Style {
+    Style {
+        //size: Size::new(Val::Px(200.0), Val::Px(80.0)),
+        //justify_content: JustifyContent::Center,
+        // align_items: AlignItems::Center,
         ..Style::DEFAULT
     }
 }

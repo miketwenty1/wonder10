@@ -1,7 +1,5 @@
 use bevy::prelude::*;
 
-use crate::scenes::player_select::player_select_layout::PlayerSelectMenu;
-
 use super::{
     components::{Capitalizable, KeyBoard, KeyBoardButton, KeyType, KeyboardNode},
     styles::NORMAL_BUTTON,

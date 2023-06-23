@@ -80,6 +80,9 @@ pub fn fill_textboxes_from_keyboard(
     mut text_query: Query<(&mut Text, &EditableText), With<EditableText>>,
     mut keyboard_data: ResMut<KeyboardData>,
     mut selected_text: ResMut<SelectedText>,
+    mut ln_res: ResMut<LightningAddressRes>,
+    mut color_res: ResMut<ColorRes>,
+    mut msg_res: ResMut<MessageRes>,
 ) {
     for (mut textbox, editable_type) in text_query.iter_mut() {
         match selected_text.0 {
@@ -89,6 +92,7 @@ pub fn fill_textboxes_from_keyboard(
                         textbox.sections[0].value = "  ".to_string();
                     } else {
                         textbox.sections[0].value = keyboard_data.0.to_string();
+                        ln_res.0 = keyboard_data.0.to_string();
                     }
                 }
             }
@@ -98,6 +102,7 @@ pub fn fill_textboxes_from_keyboard(
                         textbox.sections[0].value = "  ".to_string();
                     } else {
                         textbox.sections[0].value = keyboard_data.0.to_string();
+                        color_res.0 = keyboard_data.0.to_string();
                     }
                 }
             }
@@ -107,6 +112,7 @@ pub fn fill_textboxes_from_keyboard(
                         textbox.sections[0].value = "  ".to_string();
                     } else {
                         textbox.sections[0].value = keyboard_data.0.to_string();
+                        msg_res.0 = keyboard_data.0.to_string();
                     }
                 }
             }

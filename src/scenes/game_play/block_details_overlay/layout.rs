@@ -1,5 +1,9 @@
 use crate::{
-    comms::{BlockchainBlockDataFromServer, GameBlock, GameBlockDataFromServer},
+    comms::{
+        events::ServerBlockchainBlockIn,
+        resources::{BlockchainBlockDataFromServer, GameBlockDataFromServer},
+        GameBlock,
+    },
     keyboard::resources::KeyboardData,
     scenes::game_play::{
         block_details_overlay::{
@@ -9,7 +13,7 @@ use crate::{
                 get_button_text_style, get_title_text_style, BACKGROUND_COLOR,
             },
         },
-        events::{PlayerMove, ServerBlockchainBlockIn},
+        events::PlayerMove,
     },
     CommsApiState, GameState, KeyboardState, PlayerLocation, PlayerUsername,
 };
@@ -68,6 +72,7 @@ pub fn spawn_block_details_menu(
                     buy_amount,
                     player_username.0.to_string(),
                 );
+                api_state.set(CommsApiState::Off);
                 keyboard_state.set(KeyboardState::On);
             }
 

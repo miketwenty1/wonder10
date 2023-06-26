@@ -1,13 +1,11 @@
-use crate::{
-    comms::GameBlockDataFromServer,
-    scenes::game_play::events::{PlayerMove, ServerGameBocksIn},
-    CommsApiState, ServerURL,
-};
+use crate::{scenes::game_play::events::PlayerMove, CommsApiState, ServerURL};
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
 use bevy::tasks::IoTaskPool;
 
-use super::api_timer::ApiPollingTimer;
+use super::{
+    api_timer::ApiPollingTimer, events::ServerGameBocksIn, resources::GameBlockDataFromServer,
+};
 
 #[derive(Resource, Clone)]
 pub struct PlayerMovementChannel {

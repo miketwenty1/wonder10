@@ -9,14 +9,12 @@ mod update_systems;
 
 use bevy::prelude::*;
 
+use crate::comms::events::{ServerBlockchainBlockIn, ServerGameBocksIn};
 use crate::GameState;
 
 use self::block_details_overlay::BlockDetailsMenuPlugin;
 use self::blocks_grid::SelectedBlock;
-use self::events::{
-    BlockButtonSelected, BlockDetailClick, BuyBlockRequest, PlayerMove, ServerBlockchainBlockIn,
-    ServerGameBocksIn,
-};
+use self::events::{BlockButtonSelected, BlockDetailClick, BuyBlockRequest, PlayerMove};
 use self::game_layout::spawn_layout;
 use self::invoice_overlay::InvoiceOverlay;
 use self::movement::update_blocks_from_server_on_move;
@@ -39,8 +37,6 @@ impl Plugin for GamePlayPlugin {
             .init_resource::<SelectedBlock>()
             .add_event::<BlockButtonSelected>()
             .add_event::<PlayerMove>()
-            .add_event::<ServerGameBocksIn>()
-            .add_event::<ServerBlockchainBlockIn>()
             .add_event::<BlockDetailClick>()
             .add_event::<BuyBlockRequest>()
             .add_systems(OnEnter(GameState::Game), spawn_layout)

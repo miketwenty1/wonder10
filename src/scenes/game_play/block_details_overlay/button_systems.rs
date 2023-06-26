@@ -38,7 +38,7 @@ pub fn interact_with_buy_button(
                 let color_r = if color_res.0.is_empty() {
                     "blue".to_string()
                 } else {
-                    ln_res.0.clone()
+                    color_res.0.clone()
                 };
                 *color = PRESSED_BUTTON.into();
                 comms_api_next_state.set(CommsApiState::Buy);

@@ -1,6 +1,6 @@
 use crate::{
-    comms::GameBlockDataFromServer,
-    scenes::game_play::{blocks_grid::BlockButton, events::ServerGameBocksIn},
+    comms::{events::ServerGameBocksIn, resources::GameBlockDataFromServer},
+    scenes::game_play::blocks_grid::BlockButton,
 };
 use bevy::prelude::*;
 

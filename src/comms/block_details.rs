@@ -1,13 +1,12 @@
-use crate::{
-    comms::BlockchainBlockDataFromServer,
-    scenes::game_play::events::{BlockDetailClick, ServerBlockchainBlockIn},
-    CommsApiState, GameState, ServerURL,
-};
+use crate::{scenes::game_play::events::BlockDetailClick, CommsApiState, GameState, ServerURL};
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
 use bevy::tasks::IoTaskPool;
 
-use super::api_timer::ApiPollingTimer;
+use super::{
+    api_timer::ApiPollingTimer, events::ServerBlockchainBlockIn,
+    resources::BlockchainBlockDataFromServer,
+};
 
 #[derive(Resource, Clone)]
 pub struct BlockDetailsChannel {
@@ -45,7 +44,6 @@ pub fn api_request_blockchain_block(
 pub fn api_receive_blockchain_block(
     channel: ResMut<BlockDetailsChannel>,
     api_timer: Res<ApiPollingTimer>,
-    mut api_name_set_state: ResMut<NextState<CommsApiState>>,
     mut current_block_server_data: ResMut<BlockchainBlockDataFromServer>,
     mut server_block_in_event: EventWriter<ServerBlockchainBlockIn>,
     mut game_state: ResMut<NextState<GameState>>,
@@ -53,7 +51,7 @@ pub fn api_receive_blockchain_block(
     if api_timer.timer.finished() {
         let api_res = channel.rx.try_recv();
 
-        info!("waiting to receive block details");
+        info!("waiting to receive blockchain block details");
         match api_res {
             Ok(r) => {
                 info!("response to requesting block details: {}", r);
@@ -63,7 +61,6 @@ pub fn api_receive_blockchain_block(
                         info!("{:?}", server_block_data);
                         *current_block_server_data = server_block_data;
 
-                        api_name_set_state.set(CommsApiState::Off);
                         server_block_in_event.send(ServerBlockchainBlockIn);
                         game_state.set(GameState::BlockDetailsOverlay);
                     }
@@ -74,7 +71,7 @@ pub fn api_receive_blockchain_block(
                 r
             }
             Err(e) => {
-                info!("response to setname: {}", e);
+                info!("response to blockchain block: {}", e);
                 e.to_string()
             }
         };

@@ -1,8 +1,10 @@
 mod api_timer;
 
 pub mod block_details;
+pub mod events;
 pub mod invoice;
 pub mod player_move;
+pub mod resources;
 pub mod set_name;
 pub mod setup;
 
@@ -10,26 +12,19 @@ use crate::{CommsApiState, DisplayInvoice};
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use validator::Validate;
 
 use self::{
     api_timer::{tick_api_receive_timer, ApiPollingTimer},
     block_details::{api_receive_blockchain_block, api_request_blockchain_block},
-    invoice::{api_check_invoice, api_request_invoice},
+    events::{ServerBlockchainBlockIn, ServerGameBocksIn, ServerInvoiceIn},
+    invoice::{
+        api_check_invoice, api_receive_invoice, api_receive_invoice_check, api_request_invoice,
+    },
     player_move::{api_receive_player_movement, api_send_player_move},
+    resources::{BlockchainBlockDataFromServer, GameBlockDataFromServer, InvoiceDataFromServer},
     set_name::api_receive_username,
 };
-
-#[derive(Resource, Clone, Debug, Default, Validate, Deserialize)]
-pub struct GameBlockDataFromServer {
-    pub blocks: HashMap<String, GameBlock>,
-}
-
-#[derive(Resource, Clone, Debug, Default, Validate, Deserialize)]
-pub struct BlockchainBlockDataFromServer {
-    pub blocks: HashMap<String, BlockchainBlock>,
-}
 
 #[derive(Debug, Clone, Serialize, Validate, Deserialize)]
 pub struct BlockchainBlock {
@@ -77,8 +72,13 @@ impl Plugin for CommsPlugin {
         app.init_resource::<ApiPollingTimer>()
             .init_resource::<GameBlockDataFromServer>()
             .init_resource::<BlockchainBlockDataFromServer>()
+            .init_resource::<InvoiceDataFromServer>()
+            .add_event::<ServerBlockchainBlockIn>()
+            .add_event::<ServerGameBocksIn>()
+            .add_event::<ServerInvoiceIn>()
             // EVERY STATE FOR RECEIVING API CALLS NEEDS TO TICK
             .add_systems(
+                //ServerInvoiceIn
                 Update,
                 tick_api_receive_timer.run_if(in_state(CommsApiState::SetName).or_else(
                     in_state(CommsApiState::Move).or_else(
@@ -104,8 +104,9 @@ impl Plugin for CommsPlugin {
             .add_systems(
                 Update,
                 (
-                    api_request_invoice.run_if(in_state(CommsApiState::Buy)),
-                    api_check_invoice.run_if(in_state(DisplayInvoice::On)),
+                    (api_request_invoice, api_receive_invoice).run_if(in_state(CommsApiState::Buy)),
+                    (api_check_invoice, api_receive_invoice_check)
+                        .run_if(in_state(CommsApiState::CheckInvoice)),
                 ),
             );
     }

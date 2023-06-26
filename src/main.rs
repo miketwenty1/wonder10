@@ -42,6 +42,7 @@ pub enum CommsApiState {
     Move,
     BlockDetails,
     Buy,
+    CheckInvoice,
 }
 
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]

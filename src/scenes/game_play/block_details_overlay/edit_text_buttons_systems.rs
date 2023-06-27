@@ -1,20 +1,11 @@
-use crate::{
-    keyboard::resources::KeyboardData,
-    scenes::game_play::{blocks_grid::SelectedBlock, events::BuyBlockRequest},
-    CommsApiState, DisplayInvoice, GameState, KeyboardState, PlayerUsername,
-};
+use crate::keyboard::resources::KeyboardData;
 use bevy::prelude::*;
 
 use super::{
-    components::{
-        BackBdButton, BuyBdBlockButton, EditableButton, EditableText, LightningAddressButton,
-        LightningAddressText,
-    },
+    components::{EditableButton, EditableText},
     resources::{ColorRes, LightningAddressRes, MessageRes, SelectedText},
     //resources::LightningAddressRes,
-    styles::{
-        BG_BUY_BTN_COLOR, BG_BUY_BTN_HOVER_COLOR, HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON,
-    },
+    styles::{BG_BUY_BTN_COLOR, BG_BUY_BTN_HOVER_COLOR, PRESSED_BUTTON},
 };
 
 #[allow(clippy::type_complexity)]

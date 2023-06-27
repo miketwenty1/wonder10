@@ -6,18 +6,12 @@ use crate::{
     },
     keyboard::resources::KeyboardData,
     scenes::game_play::{
-        block_details_overlay::{
-            components::{BackBdButton, BuyBdBlockButton},
-            styles::{
-                get_bd_menu_container_style, get_bd_menu_style, get_button_style,
-                get_button_text_style, get_title_text_style, BACKGROUND_COLOR,
-            },
-        },
+        block_details_overlay::styles::{get_bd_menu_style, BACKGROUND_COLOR},
         events::PlayerMove,
     },
     CommsApiState, GameState, KeyboardState, PlayerLocation, PlayerUsername,
 };
-use bevy::{input::keyboard, prelude::*};
+use bevy::prelude::*;
 
 use super::{
     components::DetailsMenu,
@@ -26,7 +20,6 @@ use super::{
         spawn_game_block_data_row, spawn_header_row, spawn_input_header_row,
         spawn_input_values_area_row,
     },
-    styles::NORMAL_BUTTON,
 };
 
 #[allow(clippy::too_many_arguments)]

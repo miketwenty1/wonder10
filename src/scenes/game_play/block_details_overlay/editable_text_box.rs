@@ -1,13 +1,8 @@
 use bevy::prelude::*;
 
 use super::{
-    components::{
-        ColorButton, ColorText, EditableButton, EditableText, LightningAddressButton,
-        LightningAddressText, MessageButton, MessageText,
-    },
-    styles::{
-        get_button_style, get_editable_button_style, BG_INPUT_COLOR, INPUT_COLOR, NORMAL_BUTTON,
-    },
+    components::{EditableButton, EditableText},
+    styles::{get_editable_button_style, BG_INPUT_COLOR, INPUT_COLOR, NORMAL_BUTTON},
 };
 
 pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, default_text: &str) {

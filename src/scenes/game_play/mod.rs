@@ -2,7 +2,7 @@ mod block_details_overlay;
 pub mod blocks_grid;
 pub mod events;
 pub mod game_layout;
-mod invoice_overlay;
+pub mod invoice_overlay;
 mod movement;
 mod ulam;
 mod update_systems;
@@ -16,7 +16,9 @@ use self::block_details_overlay::BlockDetailsMenuPlugin;
 use self::blocks_grid::SelectedBlock;
 use self::events::{BlockButtonSelected, BlockDetailClick, BuyBlockRequest, PlayerMove};
 use self::game_layout::spawn_layout;
-use self::invoice_overlay::InvoiceOverlay;
+use self::invoice_overlay::components::InvoiceOverlay;
+//use self::invoice_overlay::components::InvoiceOverlay;
+//use self::invoice_overlay::InvoiceOverlay;
 use self::movement::update_blocks_from_server_on_move;
 use self::update_systems::{
     button_block_details, button_interaction_system, update_listen_for_player_move,

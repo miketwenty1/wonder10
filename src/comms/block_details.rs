@@ -1,4 +1,4 @@
-use crate::{scenes::game_play::events::BlockDetailClick, CommsApiState, GameState, ServerURL};
+use crate::{scenes::game_play::events::BlockDetailClick, GameState, ServerURL};
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
 use bevy::tasks::IoTaskPool;

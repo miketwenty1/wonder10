@@ -28,7 +28,7 @@ pub enum GameState {
 }
 
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
-pub enum DisplayInvoice {
+pub enum DisplayInvoiceQr {
     #[default]
     Off,
     On,
@@ -91,7 +91,7 @@ pub fn game(username: String, server_url: String) {
         .insert_resource(ServerURL(server_url))
         .insert_resource(KeyboardData("".to_string()))
         .add_state::<GameState>()
-        .add_state::<DisplayInvoice>()
+        .add_state::<DisplayInvoiceQr>()
         .add_state::<CommsApiState>()
         .add_state::<MusicState>()
         .add_state::<KeyboardState>()

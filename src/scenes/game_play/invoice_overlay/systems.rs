@@ -1,13 +1,12 @@
 use bevy::prelude::*;
 
-pub fn spawn_qr_code() {
-    info!("SPAWN QR CODE");
-}
-pub fn interact_with_copy_button() {
-    info!("COPY BUTTON Iteraction!");
-}
+use crate::comms::resources::InvoiceDataFromServer;
 
-// // #[cfg(web_sys_unstable_apis)]
+// pub fn interact_with_copy_button() {
+//     info!("COPY BUTTON Iteraction!");
+// }
+
+// #[cfg(web_sys_unstable_apis)]
 // pub fn update_qr(
 //     qr: Res<MyQr>,
 //     mut egui_context: ResMut<EguiContext>,
@@ -49,25 +48,62 @@ pub fn interact_with_copy_button() {
 //     });
 // }
 
-// pub fn setup_qr(mut commands: Commands, qrcode_str: ResMut<CurrentQrString>) {
-//     info!("current qr code during setup: {}", qrcode_str.0);
-//     let code = QrCode::with_version(&qrcode_str.0, Version::Normal(9), EcLevel::L).unwrap();
+pub fn spawn_qr_code(
+    mut commands: Commands,
+    invoice_data: Res<InvoiceDataFromServer>,
+    //mut images: ResMut<Assets<Image>>,
+) {
+    info!("spawning QR code");
+    // let invoice_str = &invoice_data.invoice;
+    // let qr_code = QrCode::with_version(invoice_str, Version::Normal(9), EcLevel::L).unwrap();
 
-//     let image = code
-//         .render::<svg::Color>()
-//         .min_dimensions(200, 200)
-//         .max_dimensions(300, 300)
-//         .dark_color(svg::Color("#800000"))
-//         .light_color(svg::Color("#ffff80"))
-//         .build();
+    // let image = qr_code
+    //     .render::<svg::Color>()
+    //     .min_dimensions(200, 200)
+    //     .max_dimensions(300, 300)
+    //     .dark_color(svg::Color("#800000"))
+    //     .light_color(svg::Color("#ffff80"))
+    //     .build();
 
-//     let a = egui_extras::RetainedImage::from_svg_bytes_with_size(
-//         "invoicesvg",
-//         image.as_bytes(),
-//         egui_extras::image::FitTo::Original,
-//     )
-//     .unwrap();
+    // let a = egui_extras::RetainedImage::from_svg_bytes_with_size(
+    //     "invoicesvg",
+    //     image.as_bytes(),
+    //     egui_extras::image::FitTo::Original,
+    // )
+    // .unwrap();
 
-//     // Cache QR code to be used later
-//     commands.insert_resource(MyQr(a))
+    // // Cache QR code to be used later
+    // commands.insert_resource(MyQr(a));
+
+    // let my_vector = vec![1, 2, 3, 4, 5, 6, 7, 8];
+
+    // let image = Image {
+    //     data: my_vector,
+    //     ..Default::default()
+    // };
+
+    //let image_handle = images.add(image);
+
+    // commands.spawn(ImageBundle {
+    //     image: UiImage::new(image_handle),
+    //     style: Style {
+    //         size: Size {
+    //             width: Val::Percent(100.0),
+    //             height: Val::Percent(100.0),
+    //         },
+    //         ..Default::default()
+    //     },
+    //     background_color: Color::WHITE.into(),
+    //     ..Default::default()
+    // });
+}
+
+// fn spawn_qr_code(mut commands: Commands, asset_server: Res<AssetServer>) {
+//     let svg = asset_server.load("neutron_star.svg");
+//     //commands.spawn(Camera2dBundle::default());
+//     commands.spawn(Svg2dBundle {
+//         svg,
+//         origin: Origin::Center,
+//         ..Default::default()
+//     });
 // }

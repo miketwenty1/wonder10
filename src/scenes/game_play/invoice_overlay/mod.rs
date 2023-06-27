@@ -1,23 +1,27 @@
-use crate::{despawn_screen, DisplayInvoice};
+use crate::{despawn_screen, DisplayInvoiceQr};
 use bevy::prelude::*;
+use egui_extras::RetainedImage;
 
-use self::{
-    components::Invoice,
-    systems::{interact_with_copy_button, spawn_qr_code},
-};
-mod components;
-mod systems;
+use self::{components::InvoiceOverlay, systems::spawn_qr_code};
+pub mod components;
+pub mod systems;
 
-pub struct InvoiceOverlay;
+// #[derive(Resource, Deref)]
+// pub struct MyQr(pub RetainedImage);
+
 impl Plugin for InvoiceOverlay {
     fn build(&self, app: &mut App) {
         app
             // OnEnter Systems
-            .add_systems(OnEnter(DisplayInvoice::On), spawn_qr_code)
+            //.insert_resource(WinitSettings::desktop_app())
+            .add_systems(OnEnter(DisplayInvoiceQr::On), spawn_qr_code)
+            // .add_systems(
+            //     Update,
+            //     interact_with_copy_button.run_if(in_state(DisplayInvoice::On)),
+            // )
             .add_systems(
-                Update,
-                interact_with_copy_button.run_if(in_state(DisplayInvoice::On)),
-            )
-            .add_systems(OnExit(DisplayInvoice::On), despawn_screen::<Invoice>);
+                OnExit(DisplayInvoiceQr::On),
+                despawn_screen::<InvoiceOverlay>,
+            );
     }
 }

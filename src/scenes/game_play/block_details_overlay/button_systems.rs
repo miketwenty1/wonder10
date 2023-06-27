@@ -1,6 +1,6 @@
 use crate::{
     scenes::game_play::{blocks_grid::SelectedBlock, events::BuyBlockRequest},
-    CommsApiState, DisplayInvoice, GameState, KeyboardState, PlayerUsername,
+    CommsApiState, GameState, KeyboardState, PlayerUsername,
 };
 use bevy::prelude::*;
 
@@ -18,7 +18,6 @@ pub fn interact_with_buy_button(
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<BuyBdBlockButton>),
     >,
-    mut app_next_state: ResMut<NextState<DisplayInvoice>>,
     mut comms_api_next_state: ResMut<NextState<CommsApiState>>,
     mut button_event_reader: EventWriter<BuyBlockRequest>,
     selected_block: ResMut<SelectedBlock>,

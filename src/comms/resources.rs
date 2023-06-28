@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use validator::Validate;
 
-use super::{invoice::InvoiceStatus, BlockchainBlock, GameBlock};
+use super::{BlockchainBlock, GameBlock};
 
 #[derive(Resource, Clone, Debug, Default, Validate, Deserialize)]
 pub struct BlockchainBlockDataFromServer {

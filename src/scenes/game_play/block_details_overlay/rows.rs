@@ -14,8 +14,6 @@ use super::{
     },
 };
 
-const ALIGN_ITEMS_COLOR: Color = Color::rgb(1., 0.066, 0.349);
-const JUSTIFY_CONTENT_COLOR: Color = Color::rgb(0.102, 0.522, 1.);
 const MARGIN: Val = Val::Px(5.);
 
 pub fn spawn_header_row(builder: &mut ChildBuilder, font: Handle<Font>, height: &str) {
@@ -214,20 +212,12 @@ pub fn spawn_input_values_area_row(
                             );
                             match lightning_address {
                                 Some(l) => {
-                                    spawn_ln_editable(
-                                        inner_input_row,
-                                        font.clone(),
-                                        //20.0,
-                                        //INPUT_COLOR,
-                                        l.as_str(),
-                                    );
+                                    spawn_ln_editable(inner_input_row, font.clone(), l.as_str());
                                 }
                                 None => {
                                     spawn_ln_editable(
                                         inner_input_row,
                                         font.clone(),
-                                        //20.0,
-                                        //INPUT_COLOR,
                                         "satoshisettlers@zbd.gg",
                                     );
                                 }

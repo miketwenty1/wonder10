@@ -1,7 +1,3 @@
-use crate::{
-    comms::resources::InvoiceDataFromServer,
-    scenes::game_play::block_details_overlay::styles::{get_bd_menu_style, BACKGROUND_COLOR},
-};
 use bevy::prelude::*;
 // pub fn interact_with_copy_button() {
 //     info!("COPY BUTTON Iteraction!");

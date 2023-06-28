@@ -8,7 +8,7 @@ pub mod resources;
 pub mod set_name;
 pub mod setup;
 
-use crate::{CommsApiState, DisplayInvoiceQr};
+use crate::CommsApiState;
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

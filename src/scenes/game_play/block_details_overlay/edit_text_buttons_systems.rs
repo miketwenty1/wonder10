@@ -69,8 +69,8 @@ pub fn interact_with_lnaddress_edit_button(
 
 pub fn fill_textboxes_from_keyboard(
     mut text_query: Query<(&mut Text, &EditableText), With<EditableText>>,
-    mut keyboard_data: ResMut<KeyboardData>,
-    mut selected_text: ResMut<SelectedText>,
+    keyboard_data: ResMut<KeyboardData>,
+    selected_text: ResMut<SelectedText>,
     mut ln_res: ResMut<LightningAddressRes>,
     mut color_res: ResMut<ColorRes>,
     mut msg_res: ResMut<MessageRes>,

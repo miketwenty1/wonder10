@@ -12,7 +12,7 @@ const LETTER_SET: &str = "abcdefghijklmnopqrstuvwxyz";
 pub fn setup_keyboard(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut placement_query: Query<Entity, With<KeyboardNode>>,
+    placement_query: Query<Entity, With<KeyboardNode>>,
 ) {
     info!("keyboard setup!");
     for ent in placement_query.iter() {

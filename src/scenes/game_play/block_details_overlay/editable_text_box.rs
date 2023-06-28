@@ -5,7 +5,7 @@ use super::{
     styles::{get_editable_button_style, BG_INPUT_COLOR, INPUT_COLOR, NORMAL_BUTTON},
 };
 
-pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, default_text: &str) {
+pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, _default_text: &str) {
     builder
         .spawn((NodeBundle {
             style: Style {

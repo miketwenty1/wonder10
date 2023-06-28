@@ -10,10 +10,7 @@ pub mod systems;
 
 impl Plugin for InvoiceOverlay {
     fn build(&self, app: &mut App) {
-        app
-            // OnEnter Systems
-            //.insert_resource(WinitSettings::desktop_app())
-            // .add_systems(OnEnter(DisplayInvoiceQr::On), spawn_qr_code)
+        app.add_systems(OnEnter(DisplayInvoiceQr::On), spawn_qr_code)
             // .add_systems(
             //     Update,
             //     interact_with_copy_button.run_if(in_state(DisplayInvoice::On)),

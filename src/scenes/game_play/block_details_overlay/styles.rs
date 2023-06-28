@@ -8,13 +8,13 @@ pub const BG_INPUT_COLOR: Color = Color::rgb(0.85, 0.85, 0.85);
 pub const BG_BUY_BTN_COLOR: Color = Color::rgb(0.05, 0.25, 0.05);
 pub const BG_BUY_BTN_HOVER_COLOR: Color = Color::rgb(0.1, 0.35, 0.1);
 
-pub fn get_title_text_style(asset_server: &Res<AssetServer>, size: f32) -> TextStyle {
-    TextStyle {
-        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-        font_size: size,
-        color: Color::rgb(1.0, 1.0, 1.0),
-    }
-}
+// pub fn get_title_text_style(asset_server: &Res<AssetServer>, size: f32) -> TextStyle {
+//     TextStyle {
+//         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+//         font_size: size,
+//         color: Color::rgb(1.0, 1.0, 1.0),
+//     }
+// }
 
 pub fn get_button_text_style(font: Handle<Font>) -> TextStyle {
     TextStyle {
@@ -40,18 +40,18 @@ pub fn get_bd_menu_style() -> Style {
     }
 }
 
-pub fn get_bd_menu_container_style() -> Style {
-    Style {
-        display: Display::Flex,
-        flex_direction: FlexDirection::Column,
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        width: Val::Percent(100.0),
-        height: Val::Percent(100.0),
-        //gap: Size::new(Val::Px(8.0), Val::Px(8.0)),
-        ..Style::DEFAULT
-    }
-}
+// pub fn get_bd_menu_container_style() -> Style {
+//     Style {
+//         display: Display::Flex,
+//         flex_direction: FlexDirection::Column,
+//         justify_content: JustifyContent::Center,
+//         align_items: AlignItems::Center,
+//         width: Val::Percent(100.0),
+//         height: Val::Percent(100.0),
+//         //gap: Size::new(Val::Px(8.0), Val::Px(8.0)),
+//         ..Style::DEFAULT
+//     }
+// }
 
 pub fn get_button_style() -> Style {
     Style {

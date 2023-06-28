@@ -97,11 +97,11 @@ pub fn game(username: String, server_url: String) {
         .add_state::<KeyboardState>()
         .add_systems(Startup, setup)
         .add_systems(Startup, comms::setup::setup_comm)
-        .add_plugin(KeyboardPlugin)
-        .add_plugin(InstructionsPlugin)
-        .add_plugin(PlayerSelectPlugin)
-        .add_plugin(GamePlayPlugin)
-        .add_plugin(CommsPlugin)
+        .add_plugins(KeyboardPlugin)
+        .add_plugins(InstructionsPlugin)
+        .add_plugins(PlayerSelectPlugin)
+        .add_plugins(GamePlayPlugin)
+        .add_plugins(CommsPlugin)
         .add_systems(OnEnter(MusicState::Lobby), setup_music)
         .run();
 }

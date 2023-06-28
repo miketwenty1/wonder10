@@ -41,7 +41,8 @@ pub fn spawn_layout(
                     z_index: ZIndex::Global(1),
                     style: Style {
                         display: Display::Grid,
-                        size: Size::all(Val::Percent(100.)),
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(100.0),
                         grid_template_columns: vec![
                             GridTrack::auto(),
                             GridTrack::min_content(),
@@ -165,7 +166,7 @@ fn spawn_select_block_buttons(builder: &mut ChildBuilder, font: Handle<Font>) {
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
@@ -187,8 +188,8 @@ fn spawn_select_block_buttons(builder: &mut ChildBuilder, font: Handle<Font>) {
                             align_items: AlignItems::Center,
                             //padding: UiRect::all(Val::Px(10.0)),
                             margin: UiRect::all(Val::Px(10.0)),
-                            size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-
+                            width: Val::Px(150.0),
+                            height: Val::Px(65.0),
                             ..default()
                         },
                         background_color: NORMAL_BUTTON.into(),
@@ -216,7 +217,8 @@ fn spawn_select_block_buttons(builder: &mut ChildBuilder, font: Handle<Font>) {
                             // vertically center child text
                             align_items: AlignItems::Center,
                             //padding: UiRect::all(Val::Px(10.0)),
-                            size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                            width: Val::Px(150.0),
+                            height: Val::Px(65.0),
                             ..default()
                         },
                         background_color: NORMAL_BUTTON.into(),

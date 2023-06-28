@@ -9,7 +9,6 @@ mod update_systems;
 
 use bevy::prelude::*;
 
-use crate::comms::events::{ServerBlockchainBlockIn, ServerGameBocksIn};
 use crate::GameState;
 
 use self::block_details_overlay::BlockDetailsMenuPlugin;
@@ -62,8 +61,8 @@ impl Plugin for GamePlayPlugin {
                 Update,
                 button_block_details.run_if(in_state(GameState::Game)),
             )
-            .add_plugin(BlockDetailsMenuPlugin)
-            .add_plugin(InvoiceOverlay)
+            .add_plugins(BlockDetailsMenuPlugin)
+            .add_plugins(InvoiceOverlay)
             .add_systems(
                 Update,
                 update_blocks_from_server_on_move.run_if(in_state(GameState::Game)),

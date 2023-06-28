@@ -20,7 +20,8 @@ pub fn spawn_layout(mut commands: Commands, asset_server: Res<AssetServer>) {
             NodeBundle {
                 style: Style {
                     display: Display::Grid,
-                    size: Size::all(Val::Percent(100.)),
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     grid_template_columns: vec![GridTrack::flex(1.0)],
                     grid_template_rows: vec![GridTrack::flex(1.0), GridTrack::flex(1.0)],
                     ..default()
@@ -68,7 +69,7 @@ fn setup_go_button(builder: &mut ChildBuilder, font: Handle<Font>) {
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
                 ..default()
@@ -79,7 +80,8 @@ fn setup_go_button(builder: &mut ChildBuilder, font: Handle<Font>) {
             parent
                 .spawn(ButtonBundle {
                     style: Style {
-                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        width: Val::Px(150.0),
+                        height: Val::Px(65.0),
                         // horizontally center child text
                         justify_content: JustifyContent::Center,
                         // vertically center child text

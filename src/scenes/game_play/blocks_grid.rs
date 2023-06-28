@@ -34,7 +34,8 @@ pub fn spawn_blocks(builder: &mut ChildBuilder, font: Handle<Font>) {
             NodeBundle {
                 style: Style {
                     display: Display::Grid,
-                    size: Size::all(Val::Percent(100.)),
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     //padding: UiRect::all(Val::Px(0.0)),
                     grid_template_columns: vec![
                         GridTrack::min_content(),
@@ -101,7 +102,8 @@ fn spawn_block_button_bundle(
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
                 ..default()
@@ -113,7 +115,8 @@ fn spawn_block_button_bundle(
                 .spawn((
                     ButtonBundle {
                         style: Style {
-                            size: Size::new(Val::Percent(94.0), Val::Percent(94.0)),
+                            width: Val::Percent(94.0),
+                            height: Val::Percent(94.0),
                             // horizontally center child text
                             justify_content: JustifyContent::Center,
                             // vertically center child text

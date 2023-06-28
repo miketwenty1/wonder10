@@ -22,7 +22,7 @@ pub fn spawn_header_row(builder: &mut ChildBuilder, font: Handle<Font>, height: 
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
                 align_items: AlignItems::Center,
@@ -53,7 +53,7 @@ pub fn spawn_blockchain_data_row(
         .spawn((
             NodeBundle {
                 style: Style {
-                    size: Size::width(Val::Percent(100.0)),
+                    width: Val::Percent(100.0),
                     flex_direction: FlexDirection::Row,
                     align_content: AlignContent::Center,
                     align_items: AlignItems::Center,
@@ -83,7 +83,7 @@ pub fn spawn_game_block_data_row(
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
                 align_items: AlignItems::Center,
@@ -133,7 +133,7 @@ pub fn spawn_input_header_row(builder: &mut ChildBuilder, font: Handle<Font>) {
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
                 align_items: AlignItems::Center,
@@ -158,7 +158,7 @@ pub fn spawn_input_values_area_row(
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
                 align_items: AlignItems::Center,
@@ -277,7 +277,7 @@ pub fn spawn_detail_buttons_row(builder: &mut ChildBuilder, font: Handle<Font>, 
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 align_content: AlignContent::Center,
                 justify_content: JustifyContent::SpaceEvenly,
@@ -339,7 +339,7 @@ pub fn keyboard_row(builder: &mut ChildBuilder) {
     builder.spawn((
         NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
                 flex_direction: FlexDirection::Row,
                 margin: UiRect::top(MARGIN),
                 justify_content: JustifyContent::SpaceEvenly,

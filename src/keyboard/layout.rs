@@ -24,15 +24,15 @@ pub fn setup_keyboard(
             NodeBundle {
                 style: Style {
                     display: Display::Grid,
-                    size: Size::width(Val::Percent(99.0)),
+                    width: Val::Percent(99.0),
+                    height: Val::Percent(99.0),
                     grid_template_columns: vec![GridTrack::flex(1.0)],
                     align_items: AlignItems::Center,
                     justify_content: JustifyContent::SpaceEvenly,
-                    gap: Size {
-                        width: Val::Px(0.0),
-                        height: Val::Px(0.0),
-                    },
-
+                    // gap: Size {
+                    //     width: Val::Px(0.0),
+                    //     height: Val::Px(0.0),
+                    // },
                     grid_template_rows: vec![
                         GridTrack::auto(),
                         GridTrack::auto(),
@@ -111,9 +111,9 @@ fn spawn_keyboard_row(builder: &mut ChildBuilder, font: Handle<Font>, row_keys: 
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::all(Val::Percent(99.)),
+                width: Val::Percent(99.0),
+                height: Val::Percent(99.0),
                 flex_direction: FlexDirection::Row,
-
                 align_items: AlignItems::Center,
                 padding: UiRect {
                     left: Val::Percent(1.),
@@ -154,7 +154,8 @@ fn keyboard_button(builder: &mut ChildBuilder, font: Handle<Font>, key: char) {
     builder
         .spawn(NodeBundle {
             style: Style {
-                size: Size::width(Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
                 padding: UiRect::horizontal(Val::Px(3.0)),
@@ -169,7 +170,8 @@ fn keyboard_button(builder: &mut ChildBuilder, font: Handle<Font>, key: char) {
                     ButtonBundle {
                         style: Style {
                             //size: Size::new(Val::Px(40.0), Val::Px(40.0)),
-                            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                            width: Val::Percent(100.0),
+                            height: Val::Percent(100.0),
                             // horizontally center child text
                             justify_content: JustifyContent::Center,
                             // vertically center child text

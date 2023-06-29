@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 use crate::{
     comms::resources::InvoiceDataFromServer, scenes::game_play::events::BuyBlockRequest,
-    CommsApiState, DisplayInvoiceQr, ServerURL,
+    CommsApiState, DisplayInvoiceQr, ServerURL, GameState,
 };
 
 use super::{
@@ -164,6 +164,8 @@ pub fn api_receive_invoice_check(
     mut invoice_check_res: ResMut<InvoiceCheckFromServer>,
     api_timer: Res<ApiPollingTimer>,
     mut api_name_set_state: ResMut<NextState<CommsApiState>>,
+    mut game_set_state: ResMut<NextState<GameState>>,
+    mut qr_set_state: ResMut<NextState<DisplayInvoiceQr>>,
     //mut current_block_server_data: ResMut<BlockchainBlockDataFromServer>,
     mut event: EventWriter<ServerInvoiceDoneIn>,
     //mut game_state: ResMut<NextState<GameState>>,
@@ -185,21 +187,30 @@ pub fn api_receive_invoice_check(
                             "completed" => {
                                 info!("completed invoice");
                                 event.send(ServerInvoiceDoneIn);
-                                api_name_set_state.set(CommsApiState::Off);
+                                api_name_set_state.set(CommsApiState::Move);
+                                qr_set_state.set(DisplayInvoiceQr::Off);
+                                game_set_state.set(GameState::Game);
                             }
                             "expired" => {
                                 info!("expired invoice");
                                 event.send(ServerInvoiceDoneIn);
-                                api_name_set_state.set(CommsApiState::Off);
+                                api_name_set_state.set(CommsApiState::Move);
+                                qr_set_state.set(DisplayInvoiceQr::Off);
+                                game_set_state.set(GameState::Game);
                             }
                             "error" => {
                                 info!("error invoice");
                                 event.send(ServerInvoiceDoneIn);
-                                api_name_set_state.set(CommsApiState::Off);
+                                api_name_set_state.set(CommsApiState::Move);
+                                qr_set_state.set(DisplayInvoiceQr::Off);
+                                game_set_state.set(GameState::Game);
                             }
                             _ => {
                                 info!("Something very bizaare happened picka2");
-                                api_name_set_state.set(CommsApiState::Off);
+                                api_name_set_state.set(CommsApiState::Move);
+                                qr_set_state.set(DisplayInvoiceQr::Off);
+                                game_set_state.set(GameState::Game);
+                            
                             }
                         }
                         *invoice_check_res = o;

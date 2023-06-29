@@ -6,7 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy" }
+bevy = "0.11.0-dev"
+bevy_egui = "*"
+
+#bevy = { git = "https://github.com/bevyengine/bevy" }
 rand = "0.8"
 wasm-bindgen = "0.2"
 async-channel = "1.8"
@@ -18,11 +21,23 @@ reqwest = { version = "0.11", features = ["json"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 # invoice popup
-# qrcode = "0.12"
+qrcode = "0.12"
 # image = "0.23"
-# egui_extras = { version = "0.22", features = ["svg"] }
+egui_extras = { version = "0.21", features = ["svg"] }
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+# egui_extras = "*"
 # bevy_egui = { version = "0.20", features = ["manage_clipboard"] }
 # bevy_svg = { git = "https://github.com/Weasy666/bevy_svg", branch = "main" }
+# qrcode-generator = "4.1.8"
+
+[patch.crates-io]
+bevy = { git = 'https://github.com/bevyengine/bevy.git', branch = 'main' }
+bevy_egui = { git = 'https://github.com/Vrixyz/bevy_egui', branch = 'bevy-main' }
+
+[dependencies.web-sys]
+version = "0.3"
+features = ["Clipboard", "Window", "Navigator", "Permissions"]
 
 [workspace]
 resolver = "2"

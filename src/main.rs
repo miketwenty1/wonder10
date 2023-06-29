@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_egui::EguiPlugin;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
@@ -87,7 +88,7 @@ pub fn game(username: String, server_url: String) {
             ..default()
         }))
         .insert_resource(PlayerUsername(username))
-        .insert_resource(PlayerLocation(69420))
+        .insert_resource(PlayerLocation(0))
         .insert_resource(ServerURL(server_url))
         .insert_resource(KeyboardData("".to_string()))
         .add_state::<GameState>()
@@ -102,6 +103,7 @@ pub fn game(username: String, server_url: String) {
         .add_plugins(PlayerSelectPlugin)
         .add_plugins(GamePlayPlugin)
         .add_plugins(CommsPlugin)
+        .add_plugins(EguiPlugin)
         .add_systems(OnEnter(MusicState::Lobby), setup_music)
         .run();
 }

@@ -47,7 +47,7 @@ pub fn spawn_layout(
                         GridTrack::auto(),
                         GridTrack::flex(1.0),
                     ],
-                    padding: UiRect::horizontal(Val::Percent(5.0)),
+                    padding: UiRect::horizontal(Val::Percent(0.0)),
                     ..default()
                 },
 
@@ -63,7 +63,7 @@ pub fn spawn_layout(
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        padding: UiRect::all(Val::Px(6.0)),
+                        padding: UiRect::top(Val::Px(6.0)),
                         ..default()
                     },
                     ..default()
@@ -98,7 +98,7 @@ pub fn spawn_layout(
                     style: Style {
                         display: Display::Grid,
                         justify_items: JustifyItems::Center,
-                        padding: UiRect::all(Val::Px(6.0)),
+                        padding: UiRect::top(Val::Px(6.0)),
                         ..default()
                     },
                     ..default()

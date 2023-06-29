@@ -96,7 +96,7 @@ fn spawn_menu(
         .spawn((
             NodeBundle {
                 style: get_bd_menu_style(),
-                z_index: ZIndex::Global(2),
+                z_index: ZIndex::Local(2),
                 background_color: BACKGROUND_COLOR.into(),
                 ..default()
             },

@@ -38,7 +38,7 @@ pub fn spawn_layout(
         commands
             .spawn((
                 NodeBundle {
-                    z_index: ZIndex::Global(1),
+                    z_index: ZIndex::Local(1),
                     style: Style {
                         display: Display::Grid,
                         width: Val::Percent(100.0),

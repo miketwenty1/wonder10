@@ -64,7 +64,6 @@ pub fn update_qr_code(
                     .enabled()
                     && !(*local_copy)
                 //.clicked() should be used but for some reason isnt working on mobile.
-                //
                 {
                     *local_copy = true;
                     let qrcode_str = invoice_data.invoice.clone();

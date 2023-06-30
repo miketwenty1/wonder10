@@ -177,36 +177,36 @@ fn spawn_select_block_buttons(builder: &mut ChildBuilder, font: Handle<Font>) {
             ..default()
         })
         .with_children(|parent| {
-            parent
-                .spawn((
-                    ButtonBundle {
-                        style: Style {
-                            //size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                            // horizontally center child text
-                            justify_content: JustifyContent::Center,
-                            // vertically center child text
-                            align_items: AlignItems::Center,
-                            //padding: UiRect::all(Val::Px(10.0)),
-                            margin: UiRect::all(Val::Px(10.0)),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            ..default()
-                        },
-                        background_color: NORMAL_BUTTON.into(),
-                        ..default()
-                    },
-                    MoveButton,
-                ))
-                .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Move",
-                        TextStyle {
-                            font: font.clone(),
-                            font_size: 32.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
-                });
+            // parent
+            //     .spawn((
+            //         ButtonBundle {
+            //             style: Style {
+            //                 //size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+            //                 // horizontally center child text
+            //                 justify_content: JustifyContent::Center,
+            //                 // vertically center child text
+            //                 align_items: AlignItems::Center,
+            //                 //padding: UiRect::all(Val::Px(10.0)),
+            //                 margin: UiRect::all(Val::Px(10.0)),
+            //                 width: Val::Px(150.0),
+            //                 height: Val::Px(65.0),
+            //                 ..default()
+            //             },
+            //             background_color: NORMAL_BUTTON.into(),
+            //             ..default()
+            //         },
+            //         MoveButton,
+            //     ))
+            //     .with_children(|parent| {
+            //         parent.spawn(TextBundle::from_section(
+            //             "Move",
+            //             TextStyle {
+            //                 font: font.clone(),
+            //                 font_size: 32.0,
+            //                 color: Color::rgb(0.9, 0.9, 0.9),
+            //             },
+            //         ));
+            //     });
             parent
                 .spawn((
                     ButtonBundle {

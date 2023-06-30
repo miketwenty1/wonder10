@@ -151,7 +151,7 @@ pub fn spawn_input_values_area_row(
     builder: &mut ChildBuilder,
     font: Handle<Font>,
     owner: String,
-    lightning_address: Option<String>,
+    lightning_address: String,
 ) {
     builder
         .spawn(NodeBundle {
@@ -210,18 +210,11 @@ pub fn spawn_input_values_area_row(
                                 Color::GRAY,
                                 "Lightning Address: ",
                             );
-                            match lightning_address {
-                                Some(l) => {
-                                    spawn_ln_editable(inner_input_row, font.clone(), l.as_str());
-                                }
-                                None => {
-                                    spawn_ln_editable(
-                                        inner_input_row,
-                                        font.clone(),
-                                        "satoshisettlers@zbd.gg",
-                                    );
-                                }
-                            }
+                            spawn_ln_editable(
+                                inner_input_row,
+                                font.clone(),
+                                lightning_address.as_str(),
+                            );
                         });
                     inner
                         .spawn(NodeBundle {

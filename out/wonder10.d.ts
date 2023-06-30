@@ -3,14 +3,15 @@
 /**
 * @param {string} username
 * @param {string} server_url
+* @param {string} ln_address
 */
-export function game(username: string, server_url: string): void;
+export function game(username: string, server_url: string, ln_address: string): void;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly game: (a: number, b: number, c: number, d: number) => void;
+  readonly game: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
   readonly main: (a: number, b: number) => number;
   readonly wgpu_compute_pass_set_pipeline: (a: number, b: number) => void;
   readonly wgpu_compute_pass_set_bind_group: (a: number, b: number, c: number, d: number, e: number) => void;

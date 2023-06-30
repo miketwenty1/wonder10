@@ -9,7 +9,7 @@ use crate::{
         block_details_overlay::styles::{get_bd_menu_style, BACKGROUND_COLOR},
         events::PlayerMove,
     },
-    CommsApiState, GameState, KeyboardState, PlayerLocation, PlayerUsername,
+    CommsApiState, GameState, KeyboardState, PlayerLnAddress, PlayerLocation, PlayerUsername,
 };
 use bevy::prelude::*;
 
@@ -36,6 +36,7 @@ pub fn spawn_block_details_menu(
     player_username: Res<PlayerUsername>,
     mut keyboard_state: ResMut<NextState<KeyboardState>>,
     mut keyboard_text: ResMut<KeyboardData>,
+    ln_address: Res<PlayerLnAddress>,
 ) {
     for _event in server_block_in.iter() {
         keyboard_text.0 = "".to_string();
@@ -56,6 +57,7 @@ pub fn spawn_block_details_menu(
                 } else {
                     s.last_payment_amount * 2
                 };
+
                 spawn_menu(
                     &mut commands,
                     height,
@@ -64,6 +66,7 @@ pub fn spawn_block_details_menu(
                     s.clone(),
                     buy_amount,
                     player_username.0.to_string(),
+                    ln_address.0.to_string(),
                 );
                 api_state.set(CommsApiState::Off);
                 keyboard_state.set(KeyboardState::On);
@@ -81,6 +84,7 @@ pub fn spawn_block_details_menu(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_menu(
     commands: &mut Commands,
     height: &str,
@@ -89,6 +93,7 @@ fn spawn_menu(
     game_block: GameBlock,
     buy_amount: u32,
     player_username: String,
+    player_ln_address: String,
 ) {
     let blockchain_data = current_blockchain_server_data.blocks.get(height).unwrap();
     let font = asset_server.load("fonts/FiraSans-Bold.ttf");
@@ -107,7 +112,7 @@ fn spawn_menu(
             spawn_blockchain_data_row(builder, font.clone(), blockchain_data);
             spawn_game_block_data_row(builder, font.clone(), game_block);
             spawn_input_header_row(builder, font.clone());
-            spawn_input_values_area_row(builder, font.clone(), player_username, None);
+            spawn_input_values_area_row(builder, font.clone(), player_username, player_ln_address);
             spawn_detail_buttons_row(builder, font.clone(), buy_amount);
             keyboard_row(builder);
         });

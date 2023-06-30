@@ -67,6 +67,9 @@ pub struct PlayerUsername(String);
 pub struct PlayerLocation(u32);
 
 #[derive(Resource, Clone)]
+pub struct PlayerLnAddress(String);
+
+#[derive(Resource, Clone)]
 pub struct ServerURL(String);
 
 pub fn main() {
@@ -74,7 +77,7 @@ pub fn main() {
 }
 
 #[wasm_bindgen]
-pub fn game(username: String, server_url: String) {
+pub fn game(username: String, server_url: String, ln_address: String) {
     info!("user: {}\nserver: {}", username, server_url);
     App::new()
         // Bevy Plugins
@@ -89,6 +92,7 @@ pub fn game(username: String, server_url: String) {
         }))
         .insert_resource(PlayerUsername(username))
         .insert_resource(PlayerLocation(0))
+        .insert_resource(PlayerLnAddress(ln_address))
         .insert_resource(ServerURL(server_url))
         .insert_resource(KeyboardData("".to_string()))
         .add_state::<GameState>()

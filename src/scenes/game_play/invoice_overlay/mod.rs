@@ -11,9 +11,11 @@ pub mod systems;
 
 impl Plugin for InvoiceOverlay {
     fn build(&self, app: &mut App) {
-        app
-            .add_systems(OnEnter(DisplayInvoiceQr::On), spawn_qr_code)
-            .add_systems(Update, update_qr_code.run_if(in_state(DisplayInvoiceQr::On)))
+        app.add_systems(OnEnter(DisplayInvoiceQr::On), spawn_qr_code)
+            .add_systems(
+                Update,
+                update_qr_code.run_if(in_state(DisplayInvoiceQr::On)),
+            )
             .add_systems(
                 OnExit(DisplayInvoiceQr::On),
                 despawn_screen::<InvoiceOverlay>,

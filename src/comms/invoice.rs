@@ -3,8 +3,9 @@ use bevy::{prelude::*, tasks::IoTaskPool};
 use serde::Deserialize;
 
 use crate::{
-    comms::resources::InvoiceDataFromServer, scenes::game_play::events::BuyBlockRequest,
-    CommsApiState, DisplayInvoiceQr, ServerURL, GameState,
+    comms::resources::InvoiceDataFromServer,
+    scenes::game_play::events::{BuyBlockRequest, PlayerMove},
+    CommsApiState, DisplayInvoiceQr, GameState, PlayerLocation, ServerURL,
 };
 
 use super::{
@@ -89,7 +90,7 @@ pub fn api_request_invoice(
                 cc.try_send(api_response_text);
             });
         } else {
-            info!("already has an invoice in memory! pay that one, or let it expire and request a new one.");
+            info!("THIS IS ACTUALLY A BUG, report this, you shouldn't make it here blah3!");
             info!("current invoice to be paid: {:#?}", invoice_data.invoice);
         }
     }
@@ -141,6 +142,7 @@ pub fn api_check_invoice(
     //mut details_button_event_reader: EventReader<BlockDetailClick>,
 ) {
     if api_timer.timer.finished() {
+        info!("invoice res: {:#?}", invoice_res.invoice);
         info!("check for invoice status");
 
         let pool = IoTaskPool::get();
@@ -159,6 +161,7 @@ pub fn api_check_invoice(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn api_receive_invoice_check(
     channel: ResMut<CheckInvoiceChannel>,
     mut invoice_check_res: ResMut<InvoiceCheckFromServer>,
@@ -169,6 +172,9 @@ pub fn api_receive_invoice_check(
     //mut current_block_server_data: ResMut<BlockchainBlockDataFromServer>,
     mut event: EventWriter<ServerInvoiceDoneIn>,
     //mut game_state: ResMut<NextState<GameState>>,
+    mut invoice_data: ResMut<InvoiceDataFromServer>,
+    mut player_move_event_writer: EventWriter<PlayerMove>,
+    player_location: Res<PlayerLocation>,
 ) {
     if api_timer.timer.finished() {
         let api_res = channel.rx.try_recv();
@@ -190,6 +196,12 @@ pub fn api_receive_invoice_check(
                                 api_name_set_state.set(CommsApiState::Move);
                                 qr_set_state.set(DisplayInvoiceQr::Off);
                                 game_set_state.set(GameState::Game);
+                                *invoice_data = InvoiceDataFromServer {
+                                    ..Default::default()
+                                };
+                                player_move_event_writer.send(PlayerMove {
+                                    block: player_location.0,
+                                });
                             }
                             "expired" => {
                                 info!("expired invoice");
@@ -197,6 +209,9 @@ pub fn api_receive_invoice_check(
                                 api_name_set_state.set(CommsApiState::Move);
                                 qr_set_state.set(DisplayInvoiceQr::Off);
                                 game_set_state.set(GameState::Game);
+                                *invoice_data = InvoiceDataFromServer {
+                                    ..Default::default()
+                                };
                             }
                             "error" => {
                                 info!("error invoice");
@@ -210,7 +225,6 @@ pub fn api_receive_invoice_check(
                                 api_name_set_state.set(CommsApiState::Move);
                                 qr_set_state.set(DisplayInvoiceQr::Off);
                                 game_set_state.set(GameState::Game);
-                            
                             }
                         }
                         *invoice_check_res = o;

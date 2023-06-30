@@ -1,4 +1,5 @@
 use crate::{
+    comms::resources::InvoiceDataFromServer,
     scenes::game_play::{blocks_grid::SelectedBlock, events::BuyBlockRequest},
     CommsApiState, GameState, KeyboardState, PlayerUsername,
 };
@@ -25,6 +26,7 @@ pub fn interact_with_buy_button(
     ln_res: Res<LightningAddressRes>,
     color_res: Res<ColorRes>,
     msg_res: Res<MessageRes>,
+    invoice_data: Res<InvoiceDataFromServer>,
 ) {
     for (interaction, mut color) in button_query.iter_mut() {
         match *interaction {
@@ -40,14 +42,21 @@ pub fn interact_with_buy_button(
                     color_res.0.clone()
                 };
                 *color = PRESSED_BUTTON.into();
-                comms_api_next_state.set(CommsApiState::Buy);
-                button_event_reader.send(BuyBlockRequest {
-                    height: selected_block.height,
-                    owner: player_username.0.to_string(),
-                    refund_address: ln_addr_r,
-                    color: color_r,
-                    message: msg_res.0.to_string(),
-                });
+                info!("current comms state: {:#?}", comms_api_next_state.0);
+
+                if invoice_data.invoice.is_empty() {
+                    comms_api_next_state.set(CommsApiState::Buy);
+                    button_event_reader.send(BuyBlockRequest {
+                        height: selected_block.height,
+                        owner: player_username.0.to_string(),
+                        refund_address: ln_addr_r,
+                        color: color_r,
+                        message: msg_res.0.to_string(),
+                    });
+                } else {
+                    info!("already has an invoice in memory! pay that one, or let it expire and request a new one.");
+                    info!("current invoice to be paid: {:#?}", invoice_data.invoice);
+                }
                 //app_next_state.set(DisplayInvoice::On);
             }
             Interaction::Hovered => {

@@ -5,7 +5,7 @@ use super::{
     styles::{get_editable_button_style, BG_INPUT_COLOR, INPUT_COLOR, NORMAL_BUTTON},
 };
 
-pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, _default_text: &str) {
+pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, default_text: &str) {
     builder
         .spawn((NodeBundle {
             style: Style {
@@ -30,7 +30,7 @@ pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, _defaul
                 .with_children(|inner| {
                     inner.spawn((
                         TextBundle::from_section(
-                            "satoshisettlers@zbd.gg",
+                            default_text,
                             TextStyle {
                                 font,
                                 font_size: 20.0,
@@ -68,7 +68,7 @@ pub fn spawn_color_editable(builder: &mut ChildBuilder, font: Handle<Font>) {
                 .with_children(|inner| {
                     inner.spawn((
                         TextBundle::from_section(
-                            "blue",
+                            "  ",
                             TextStyle {
                                 font,
                                 font_size: 20.0,
@@ -106,7 +106,7 @@ pub fn spawn_message_editable(builder: &mut ChildBuilder, font: Handle<Font>) {
                 .with_children(|inner| {
                     inner.spawn((
                         TextBundle::from_section(
-                            "custom message",
+                            "  ",
                             TextStyle {
                                 font,
                                 font_size: 20.0,

@@ -8,7 +8,7 @@ const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
-const INTRO_TEXT: &str = "This game is in alpha, be prepaed to lose all funds. (seriously!)\n\nTo Move:\n1. Double click\n2. Click Move button and type in location.\n\nTo Buy:\n- Click Details and buy block\n- Make 110% earnings when someone buys block from you.";
+const INTRO_TEXT: &str = "This game is in alpha, be prepared to lose all funds. (seriously!)\n\nTo Move:\n1. Double click\n2. Click Move button and type in location.\n\nTo Buy:\n- Click Details and buy block\n- Make 110% earnings when someone buys block from you.";
 #[derive(Component, Debug)]
 pub struct InstructionMenu;
 

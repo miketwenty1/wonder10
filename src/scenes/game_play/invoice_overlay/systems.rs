@@ -61,8 +61,8 @@ pub fn update_qr_code(
             ui.with_layout(egui::Layout::bottom_up(egui::Align::Center), |ui| {
                 if ui
                     .add(egui::Button::new("Copy to Clipboard").min_size(button_min_size))
-                    .enabled()
-                    && !(*local_copy)
+                    .clicked()
+                //&& !(*local_copy)
                 //.clicked() should be used but for some reason isnt working on mobile.
                 {
                     *local_copy = true;

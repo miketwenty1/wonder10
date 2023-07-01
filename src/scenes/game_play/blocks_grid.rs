@@ -115,13 +115,14 @@ fn spawn_block_button_bundle(
                 .spawn((
                     ButtonBundle {
                         style: Style {
-                            width: Val::Percent(94.0),
-                            height: Val::Percent(94.0),
+                            width: Val::Px(74.0),
+                            height: Val::Px(74.0),
                             // horizontally center child text
                             justify_content: JustifyContent::Center,
                             // vertically center child text
                             align_items: AlignItems::Center,
                             padding: UiRect::all(Val::Px(12.0)),
+                            margin: UiRect::all(Val::Px(2.0)),
                             ..default()
                         },
                         background_color: BackgroundColor(block_color),
@@ -136,12 +137,21 @@ fn spawn_block_button_bundle(
                     },
                 ))
                 .with_children(|parent| {
+                    let fontsize: f32 = match block_num.to_string().len() {
+                        1 => 50.0,
+                        2 => 40.0,
+                        3 => 30.0,
+                        4 => 25.0,
+                        5 => 20.0,
+                        6 => 15.0,
+                        _ => 12.0,
+                    };
                     parent.spawn((
                         TextBundle::from_section(
                             block_num.to_string(),
                             TextStyle {
                                 font,
-                                font_size: 60.0,
+                                font_size: fontsize,
                                 color: Color::rgb(0.0, 0.0, 0.0),
                             },
                         ),

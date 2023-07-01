@@ -33,6 +33,18 @@ pub fn update_listen_for_player_move(
             let new_block_y = block_button.grid_offset_y + y;
             let new_block_val = value_of_xy(new_block_x, new_block_y);
             block_button.height = new_block_val;
+
+            let fontsize: f32 = match new_block_val.to_string().len() {
+                1 => 50.0,
+                2 => 40.0,
+                3 => 30.0,
+                4 => 25.0,
+                5 => 23.0,
+                6 => 20.0,
+                _ => 17.0,
+            };
+
+            text.sections[0].style.font_size = fontsize;
             text.sections[0].value = new_block_val.to_string();
 
             if new_block_val > 800_000 {

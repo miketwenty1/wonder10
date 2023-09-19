@@ -1,5 +1,5 @@
 use crate::comms::resources::InvoiceDataFromServer;
-use crate::PlayerLocation;
+use crate::scenes::game_play::blocks_grid::SelectedBlock;
 use bevy::prelude::*;
 use bevy_egui::{
     egui::{self},
@@ -8,7 +8,6 @@ use bevy_egui::{
 use egui_extras::RetainedImage;
 use qrcode::{render::svg, Version};
 use qrcode::{EcLevel, QrCode};
-
 #[derive(Resource, Deref)]
 pub struct MyQr(pub RetainedImage);
 
@@ -46,46 +45,47 @@ pub fn update_qr_code(
     qr: Res<MyQr>,
     invoice_data: Res<InvoiceDataFromServer>,
     mut egui_context: EguiContexts,
-    player_location: Res<PlayerLocation>,
+    selected_location: Res<SelectedBlock>,
     mut local_copy: Local<bool>,
 ) {
-    egui::Window::new(format!("BTC Invoice for Height {}", player_location.0)).show(
-        egui_context.ctx_mut(),
-        |ui| {
-            // Size to smallest square to preserve dimensions
-            let bevy_egui::egui::Vec2 { x, y } = ui.available_size();
-            let smaller = x.min(y);
-            qr.0.show_size(ui, bevy_egui::egui::Vec2::new(smaller, smaller));
+    egui::Window::new(format!(
+        "BTC Invoice for Height {}",
+        selected_location.height
+    ))
+    .show(egui_context.ctx_mut(), |ui| {
+        // Size to smallest square to preserve dimensions
+        let bevy_egui::egui::Vec2 { x, y } = ui.available_size();
+        let smaller = x.min(y);
+        qr.0.show_size(ui, bevy_egui::egui::Vec2::new(smaller, smaller));
 
-            let button_min_size = bevy_egui::egui::Vec2 { x: 120.0, y: 60.0 };
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::Center), |ui| {
-                if ui
-                    .add(egui::Button::new("Copy to Clipboard").min_size(button_min_size))
-                    .clicked()
-                //&& !(*local_copy)
-                //.clicked() should be used but for some reason isnt working on mobile.
-                {
-                    *local_copy = true;
-                    let qrcode_str = invoice_data.invoice.clone();
-                    use wasm_bindgen_futures::spawn_local;
-                    spawn_local(async move {
-                        let window = web_sys::window().expect("window"); // { obj: val };
-                        let nav = window.navigator().clipboard();
-                        match nav {
-                            Some(a) => {
-                                let p = a.write_text(&qrcode_str);
-                                let _result = wasm_bindgen_futures::JsFuture::from(p)
-                                    .await
-                                    .expect("clipboard populated");
-                                info!("clippyboy worked");
-                            }
-                            None => {
-                                warn!("failed to copy clippyboy");
-                            }
-                        };
-                    });
-                };
-            });
-        },
-    );
+        let button_min_size = bevy_egui::egui::Vec2 { x: 120.0, y: 60.0 };
+        ui.with_layout(egui::Layout::bottom_up(egui::Align::Center), |ui| {
+            if ui
+                .add(egui::Button::new("Copy to Clipboard").min_size(button_min_size))
+                .clicked()
+            //&& !(*local_copy)
+            //.clicked() should be used but for some reason isnt working on mobile.
+            {
+                *local_copy = true;
+                let qrcode_str = invoice_data.invoice.clone();
+                use wasm_bindgen_futures::spawn_local;
+                spawn_local(async move {
+                    let window = web_sys::window().expect("window"); // { obj: val };
+                    let nav = window.navigator().clipboard();
+                    match nav {
+                        Some(a) => {
+                            let p = a.write_text(&qrcode_str);
+                            let _result = wasm_bindgen_futures::JsFuture::from(p)
+                                .await
+                                .expect("clipboard populated");
+                            info!("clippyboy worked");
+                        }
+                        None => {
+                            warn!("failed to copy clippyboy");
+                        }
+                    };
+                });
+            };
+        });
+    });
 }

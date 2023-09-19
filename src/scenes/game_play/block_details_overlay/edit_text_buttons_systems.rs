@@ -22,10 +22,14 @@ pub fn interact_with_lnaddress_edit_button(
 ) {
     for (interaction, mut color, btn_comp) in button_query.iter_mut() {
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 // first cache select text to a resource from the keyboard
                 match selected_text.0 {
                     EditableText::LN => {
+                        // if ln_res.0.is_empty() {
+                        //     ln_res.0 = " ".to_string();
+                        //     //keyboard_data.0 = ln_res.0.to_string();
+                        // }
                         ln_res.0 = keyboard_data.0.to_string();
                     }
                     EditableText::Color => {

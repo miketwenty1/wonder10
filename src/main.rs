@@ -100,7 +100,7 @@ pub fn game(username: String, server_url: String, ln_address: String) {
         .add_state::<CommsApiState>()
         .add_state::<MusicState>()
         .add_state::<KeyboardState>()
-        .add_systems(Startup, setup)
+        .add_systems(Startup, setup_camera)
         .add_systems(Startup, comms::setup::setup_comm)
         .add_plugins(KeyboardPlugin)
         .add_plugins(InstructionsPlugin)
@@ -112,7 +112,7 @@ pub fn game(username: String, server_url: String, ln_address: String) {
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
 

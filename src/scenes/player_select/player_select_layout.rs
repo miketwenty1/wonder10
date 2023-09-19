@@ -191,7 +191,7 @@ pub fn button_system(
     for (interaction, mut color, children) in &mut interaction_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 text.sections[0].value = "Moon!".to_string();
                 *color = PRESSED_BUTTON.into();
 

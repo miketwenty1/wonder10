@@ -30,7 +30,7 @@ pub fn interact_with_buy_button(
 ) {
     for (interaction, mut color) in button_query.iter_mut() {
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 let ln_addr_r = if ln_res.0.is_empty() {
                     "satoshisettlers@zbd.gg".to_string()
                 } else {
@@ -80,7 +80,7 @@ pub fn interact_with_back_button(
 ) {
     for (interaction, mut color) in button_query.iter_mut() {
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 *color = PRESSED_BUTTON.into();
                 game_state.set(GameState::Game);
                 keyboard_state.set(KeyboardState::Off);

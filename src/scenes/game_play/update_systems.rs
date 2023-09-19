@@ -95,7 +95,7 @@ pub fn button_interaction_system(
     //button_entity,
     for (button_entity, interaction, mut bg_color, block_comp) in &mut interaction_query {
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 //info!("clicked block {}", block_comp.value);
                 if selected_block.entity == button_entity {
                     selected_block.entity = Entity::PLACEHOLDER; // used to make it where no block is highlighted after a doubleclick
@@ -159,7 +159,7 @@ pub fn button_block_details(
             selected_block.height
         };
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 info!("blockdetails clicked");
 
                 info!(

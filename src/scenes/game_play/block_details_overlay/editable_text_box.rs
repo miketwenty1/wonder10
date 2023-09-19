@@ -28,9 +28,14 @@ pub fn spawn_ln_editable(builder: &mut ChildBuilder, font: Handle<Font>, default
                     EditableButton::LN, //LightningAddressButton(false),
                 ))
                 .with_children(|inner| {
+                    let ln_default_text = if default_text.is_empty() {
+                        "  ".to_string()
+                    } else {
+                        default_text.to_string()
+                    };
                     inner.spawn((
                         TextBundle::from_section(
-                            default_text,
+                            ln_default_text,
                             TextStyle {
                                 font,
                                 font_size: 20.0,

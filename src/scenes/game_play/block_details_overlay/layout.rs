@@ -15,6 +15,7 @@ use bevy::prelude::*;
 
 use super::{
     components::DetailsMenu,
+    resources::LightningAddressRes,
     rows::{
         keyboard_row, spawn_blockchain_data_row, spawn_detail_buttons_row,
         spawn_game_block_data_row, spawn_header_row, spawn_input_header_row,
@@ -37,6 +38,7 @@ pub fn spawn_block_details_menu(
     mut keyboard_state: ResMut<NextState<KeyboardState>>,
     mut keyboard_text: ResMut<KeyboardData>,
     ln_address: Res<PlayerLnAddress>,
+    mut ln_res: ResMut<LightningAddressRes>,
 ) {
     for _event in server_block_in.iter() {
         keyboard_text.0 = "".to_string();
@@ -58,6 +60,7 @@ pub fn spawn_block_details_menu(
                     s.last_payment_amount * 2
                 };
 
+                ln_res.0 = ln_address.0.to_string();
                 spawn_menu(
                     &mut commands,
                     height,

@@ -3,13 +3,13 @@ use bevy::{
     prelude::*,
 };
 
-pub fn setup_music(asset_server: Res<AssetServer>, audio: Res<Audio>) {
-    audio.play_with_settings(
-        asset_server.load("sounds/Windless Slopes.ogg"),
-        PlaybackSettings {
-            repeat: true,
+pub fn setup_music(asset_server: Res<AssetServer>, mut commands: Commands) {
+    commands.spawn(AudioBundle {
+        source: asset_server.load("sounds/Windless Slopes.ogg"),
+        settings: PlaybackSettings {
             volume: Volume::Relative(VolumeLevel::new(0.15)),
             speed: 1.0,
+            ..Default::default()
         },
-    );
+    });
 }

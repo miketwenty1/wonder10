@@ -45,7 +45,7 @@ pub fn virtual_keyboard_system(
     for (interaction, mut color, keyboard_button) in &mut interaction_query {
         let k = keyboard_button.0;
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 match k {
                     '<' => {
                         keyboard_text.0.pop();

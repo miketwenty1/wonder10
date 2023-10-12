@@ -11,68 +11,10 @@ use qrcode::{EcLevel, QrCode};
 #[derive(Resource, Deref)]
 pub struct MyQr(pub RetainedImage);
 
-enum QrVersion {
-    Normal(u8),
-}
-
-impl QrVersion {
-    fn for_length(length: usize) -> Option<Self> {
-        // Alphanumeric capacities for versions 1-40 with L (Low) error correction level.
-        let capacities = [
-            (25, 1),
-            (47, 2),
-            (77, 3),
-            (114, 4),
-            (154, 5),
-            (195, 6),
-            (224, 7),
-            (279, 8),
-            (335, 9),
-            (395, 10),
-            (468, 11),
-            (535, 12),
-            (619, 13),
-            (667, 14),
-            (758, 15),
-            (854, 16),
-            (938, 17),
-            (1046, 18),
-            (1153, 19),
-            (1249, 20),
-            (1352, 21),
-            (1460, 22),
-            (1588, 23),
-            (1704, 24),
-            (1853, 25),
-            (1990, 26),
-            (2132, 27),
-            (2223, 28),
-            (2369, 29),
-            (2520, 30),
-            (2677, 31),
-            (2840, 32),
-            (3009, 33),
-            (3183, 34),
-            (3351, 35),
-            (3537, 36),
-            (3720, 37),
-            (3927, 38),
-            (4087, 39),
-            (4296, 40),
-        ];
-
-        for &(cap, version) in &capacities {
-            if length <= cap {
-                return Some(QrVersion::Normal(version));
-            }
-        }
-
-        None
-    }
-}
-
 #[cfg(web_sys_unstable_apis)]
 pub fn spawn_qr_code(mut commands: Commands, invoice_data: Res<InvoiceDataFromServer>) {
+    use crate::scenes::game_play::invoice_overlay::QrVersion;
+
     info!("spawning QR code");
 
     let version_number = match QrVersion::for_length(invoice_data.invoice.len()) {
@@ -107,12 +49,17 @@ pub fn spawn_qr_code(mut commands: Commands, invoice_data: Res<InvoiceDataFromSe
         .light_color(svg::Color("#ffff80"))
         .build();
 
-    let image = egui_extras::RetainedImage::from_svg_bytes_with_size(
+    let image = match egui_extras::RetainedImage::from_svg_bytes_with_size(
         "invoicesvg",
         image.as_bytes(),
         egui_extras::image::FitTo::Original,
-    )
-    .unwrap();
+    ) {
+        Ok(img) => img,
+        Err(err) => {
+            println!("Failed to create RetainedImage: {:?}", err);
+            return; // or handle the error in another way, e.g., provide a default image or show an error message to the user
+        }
+    };
 
     commands.insert_resource(MyQr(image));
 }

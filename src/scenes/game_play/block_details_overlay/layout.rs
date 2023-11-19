@@ -40,7 +40,7 @@ pub fn spawn_block_details_menu(
     ln_address: Res<PlayerLnAddress>,
     mut ln_res: ResMut<LightningAddressRes>,
 ) {
-    for _event in server_block_in.iter() {
+    for _event in server_block_in.read() {
         keyboard_text.0 = "".to_string();
         // get height
         let mut height = "0";

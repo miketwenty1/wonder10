@@ -25,7 +25,7 @@ pub fn update_listen_for_player_move(
     mut color_query: Query<&mut BackgroundColor>,
     selected_block: ResMut<SelectedBlock>,
 ) {
-    for event in player_move_event_reader.iter() {
+    for event in player_move_event_reader.read() {
         let (x, y) = calc_xy(event.block);
         for (id, mut block_button, children, mut visibility) in block_query.iter_mut() {
             let mut text = button_text_query.get_mut(children[0]).unwrap();
@@ -68,7 +68,7 @@ pub fn update_listen_for_player_select(
     mut color_query: Query<&mut BackgroundColor>,
     selected_block: ResMut<SelectedBlock>,
 ) {
-    for _event in block_selected_event_reader.iter() {
+    for _event in block_selected_event_reader.read() {
         for (id, block_button) in block_query.iter_mut() {
             if selected_block.entity != id {
                 color_query.get_mut(id).unwrap().0 = block_button.paid_color;

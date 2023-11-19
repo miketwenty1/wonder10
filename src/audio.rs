@@ -5,7 +5,7 @@ use bevy::{
 
 pub fn setup_music(asset_server: Res<AssetServer>, mut commands: Commands) {
     commands.spawn(AudioBundle {
-        source: asset_server.load("sounds/Windless Slopes.ogg"),
+        source: asset_server.load("audio/Windless Slopes.ogg"),
         settings: PlaybackSettings {
             volume: Volume::Relative(VolumeLevel::new(0.15)),
             speed: 1.0,

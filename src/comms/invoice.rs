@@ -58,7 +58,7 @@ pub fn api_request_invoice(
     mut button_event_reader: EventReader<BuyBlockRequest>,
     invoice_data: Res<InvoiceDataFromServer>,
 ) {
-    for buy_block_data in button_event_reader.iter() {
+    for buy_block_data in button_event_reader.read() {
         if invoice_data.invoice.is_empty() {
             info!("requested invoice from buy button");
 

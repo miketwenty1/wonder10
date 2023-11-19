@@ -20,7 +20,7 @@ pub fn api_request_blockchain_block(
     api_server: Res<ServerURL>,
     mut details_button_event_reader: EventReader<BlockDetailClick>,
 ) {
-    for event in details_button_event_reader.iter() {
+    for event in details_button_event_reader.read() {
         info!("event received from blockdetails clicked {}", event.block);
 
         let pool = IoTaskPool::get();

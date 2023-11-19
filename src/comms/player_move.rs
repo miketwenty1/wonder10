@@ -19,7 +19,7 @@ pub fn api_send_player_move(
     api_server: Res<ServerURL>,
     mut player_move_event_reader: EventReader<PlayerMove>,
 ) {
-    for event in player_move_event_reader.iter() {
+    for event in player_move_event_reader.read() {
         let pool = IoTaskPool::get();
         let cc = set_player_move_channel.tx.clone();
         let server = api_server.0.to_owned();

@@ -20,7 +20,7 @@ pub fn physical_keyboard_system(
         keyboard_text.0.pop();
     }
 
-    for ev in char_evr.iter() {
+    for ev in char_evr.read() {
         let k = ev.char;
 
         if ACCEPTABLE_CHARS.contains(k) && keyboard_text.0.len() < MAX_INPUT_LENGTH {

@@ -12,7 +12,7 @@ pub fn update_blocks_from_server_on_move(
 ) {
     let block_map = &current_block_server_data.blocks;
 
-    for _event in server_block_in.iter() {
+    for _event in server_block_in.read() {
         for (id, mut block_button) in block_query.iter_mut() {
             //info!("made it here 3");
             let bheight = block_button.height.to_string();

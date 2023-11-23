@@ -6,13 +6,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.12"
+bevy = { version = "0.12", default-features = false, features = [
+    "bevy_winit",
+    "bevy_ui",
+    "webgl2",
+    "mp3",
+] }
 # bevy_egui = "*"
 #bevy = { git = "https://github.com/bevyengine/bevy" }
 rand = "0.8"
 wasm-bindgen = "0.2"
-async-channel = "2.0"
-ulam = "0.4"
+async-channel = "2.1"
+ulam = { version = "0.5", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 validator = { version = "0.16", features = ["derive"] }
@@ -20,9 +25,9 @@ reqwest = { version = "0.11", features = ["json"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 # invoice popup
-qrcode = "0.11"
+qrcode = { version = "0.12", default-features = false, features = ["svg"] }
 # image = "0.23"
-egui_extras = { version = "0.23", features = ["svg"] }
+egui_extras = { version = "0.23", default-features = false, features = ["svg"] }
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 # egui_extras = "*"
@@ -55,3 +60,7 @@ opt-level = 3
 [profile.release]
 lto = true
 opt-level = 'z'
+codegen-units = 1
+# strip = true
+# panic = "abort"
+# bevy = { version = "0.12", default-features = false, features = ["bevy_sprite", "bevy_winit", "mp3", "png", "webgl2"] }
